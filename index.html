@@ -2,98 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>dhango</title>
 
-  <link rel="stylesheet" href="/styles/prebuiltform.css" />
-  <link rel="stylesheet" href="/styles/site.css" />
-  <link rel="stylesheet" href="/styles/dhango.Web.Demo.styles.css" />
+  <link rel="stylesheet" href="/styles/styles.css"/>
 </head>
 <body>
+<div class="container">
 
-<div>
-  <form id="createToken">
-    <div id="dhangoTokenSection"></div>
-    <div class="submit-container">
-      <input type="hidden" id="tokenId" />
-      <button type="submit" id="submit">Submit</button>
-    </div>
-    <label id="confirmation"></label>
-  </form>
 </div>
-
-<script src="javascript/clientscript.v2.js" type="text/javascript"></script>
-<script>
-  const d = new dhango();
-
-  d.baseUrl = "https://api.dhangodemo.com/v1";
-  /*
-  The key used here should be the key of the account that will own the token.
-  This could be the merchant's key or the platform's key.
-  */
-  d.tokenOwnerAccountKey = "platformkey";
-  /*
-  This is the key for the account that we'll be displaying payment methods for.
-  In this example, we are storing the tokens at the platform level, but we want
-  to show the available payment methods for the given account. If the same
-  account key is used in both places, the token will be owned at that level and
-  the payment methods shown will only be the supported methods for that account.
-  */
-  d.paymentMethodAccountKey = "merchantkey";
-  // OPTIONAL: This will default to en if not specified.
-  d.culture = "en";
-  /*
-  OPTIONAL: The supported payment methods will default to those configured for the account.
-  However, this property will override the available payment methods if specified.
-  For example, if the account supports multiple payment methods, but your application only
-  wants to accept card payments for a given use case, you would use the following line -
-  d.supportedPaymentMethods = [dhangoPaymentMethod.Card];
-  */
-  d.supportedPaymentMethods = [dhangoPaymentMethod.Card, dhangoPaymentMethod.ACH];
-
-  // This call injects the form elements into the given div.
-  d.displayTokenForm("dhangoTokenSection");
-
-  /*
-  This is an optional registration of a handler so your application can be notified when the user
-  changes the active payment method.
-  */
-  d.changePaymentMethodHandler = changePaymentMethodHandler;
-
-  document.getElementById('createToken').addEventListener('submit', submit);
-
-  function submit(event) {
-    document.getElementById('confirmation').textContent = '';
-
-    event.preventDefault(); // Prevent form submission
-
-    d.saveToken(postTokenHandler, postTokenErrorHandler);
-
-    return false;
-  }
-
-  function changePaymentMethodHandler() {
-    console.log('The payment method changed to ' + d.paymentMethod);
-  }
-
-  function postTokenHandler(postTokenResponse) {
-    /*
-    Now that you have the token identifier, you will want to get just the identifier to your server.
-    One option is to set the value of a hidden form and then submit the entire form via Javascript.
-    Otherwise, you can get the elements of the form (not including the payment information), and submit
-    those to your own API.
-    */
-    document.getElementById('tokenId').value = postTokenResponse.id;
-
-    document.getElementById('confirmation').textContent = 'Successfully created token with an ID of ' + postTokenResponse.id + '.';
-  }
-
-  function postTokenErrorHandler(errors) {
-    // Modify the card number to trigger this error handler. You can also obtain the specific errors
-    // using the example below.
-    // document.getElementById('confirmation').textContent = errors['Card.ExpirationYear'];
-    document.getElementById('confirmation').textContent = 'The payment method was not saved.';
-  }
-</script>
-
 </body>
 </html>
