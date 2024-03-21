@@ -131,57 +131,102 @@ const dhango = class {
         return 0;
     }
 
+    createRadio({ name, value, label: labelText, iconCssClass }) {
+        const label = document.createElement('label');
+        label.setAttribute('class', 'radio-container');
+
+        const radio = document.createElement('input');
+        radio.setAttribute('type', 'radio');
+        radio.setAttribute('name', name);
+        radio.setAttribute('value', value);
+        radio.setAttribute('class', 'radio-input');
+        label.appendChild(radio);
+
+        const radioLabelWrapper = document.createElement('span');
+        radioLabelWrapper.setAttribute('class', 'radio-label');
+
+        const radioIcon = document.createElement('span');
+        radioIcon.setAttribute('class', `radio-label-icon ${iconCssClass ?? ''}`);
+
+        const radioLabel = document.createElement('span');
+        radioLabel.setAttribute('class', 'radio-label-text');
+        radioLabel.textContent = labelText;
+
+        radioLabelWrapper.appendChild(radioIcon);
+        radioLabelWrapper.appendChild(radioLabel);
+        label.appendChild(radioLabelWrapper)
+
+        return label;
+    }
+
+    createPaymentMethodFormContainer(radio, cssClasses = []) {
+        const container = document.createElement('div');
+        container.setAttribute('class', `payment-method-container ${cssClasses.join(' ')}`);
+        container.appendChild(radio);
+
+        const fieldset = document.createElement('div');
+        fieldset.setAttribute('class', 'fieldset');
+        container.appendChild(fieldset);
+
+        return container;
+    }
+
     displayTokenForm(elementId) {
-        var buttonsPanel = document.createElement("div");
-
-        var dhangoContainer = document.createElement("div");
-
+        const formFieldsRowCssClass = 'form-fields-row';
+        const dhangoContainer = document.createElement("div");
         dhangoContainer.id = "dhangoContainer";
-
         document.getElementById(elementId).appendChild(dhangoContainer);
 
-        dhangoContainer.appendChild(buttonsPanel);
-
         if (this.supportedPaymentMethods.includes(dhangoPaymentMethod.Card)) {
-            var cardFieldSet = document.createElement("fieldset");
+            const cardFieldSet = document.createElement("fieldset");
 
             cardFieldSet.setAttribute("id", dhangoPaymentMethod.Card);
             cardFieldSet.style.display = "none";
 
             cardFieldSet.appendChild(this.createFormElement("cardAccountHolder", this.#localization.getTranslation("cardAccountHolder"), { placeholder: this.#localization.getTranslation("firstAndLastName") }));
 
-            var cardNumberContainer = document.createElement("div");
-
+            const cardNumberContainer = document.createElement("div");
             cardNumberContainer.id = "cardNumberContainer";
+            cardNumberContainer.setAttribute('class', formFieldsRowCssClass);
 
             cardNumberContainer.appendChild(this.createFormElement("cardAccountNumber", this.#localization.getTranslation("cardAccountNumber"), { numbersOnly: true, minimumLength: 15, maximumLength: 16, input: this.cardNumberInput, placeholder: "1234123412341234", containerId: "card-number-input-container" }));
             cardNumberContainer.appendChild(this.createFormElement("cardExpiration", this.#localization.getTranslation("cardExpiration"), { numbersOnly: false, minimumLength: 5, maximumLength: 5, input: this.cardExpirationInput, placeholder: "MM/YY" }));
 
             cardFieldSet.appendChild(cardNumberContainer);
 
-            var cardVerificationContainer = document.createElement("div");
-
+            const cardVerificationContainer = document.createElement("div");
             cardVerificationContainer.id = "cardVerificationContainer";
+            cardVerificationContainer.setAttribute('class', formFieldsRowCssClass);
 
             cardVerificationContainer.appendChild(this.createFormElement("securityCode", this.#localization.getTranslation("securityCode"), { numbersOnly: true, minimumLength: 3, maximumLength: 4, placeholder: "CVV" }));
             cardVerificationContainer.appendChild(this.createFormElement("postalCode", this.#localization.getTranslation("postalCode"), { numbersOnly: false, minimumLength: 5, maximumLength: 10, placeholder: "12345" }));
 
             cardFieldSet.appendChild(cardVerificationContainer);
 
-            dhangoContainer.appendChild(cardFieldSet);
+            const radioButton = this.createRadio({
+                name: 'paymentMethod',
+                value: dhangoPaymentMethod.Card,
+                label: this.#localization.getTranslation('card'),
+                iconCssClass: 'radio-label-icon-card'
+            });
+            const paymentMethodFormContainer = this.createPaymentMethodFormContainer(
+              radioButton, [`payment-method-${dhangoPaymentMethod.Card}`]
+            );
+            paymentMethodFormContainer
+              .getElementsByClassName('fieldset')[0]
+              .appendChild(cardFieldSet);
+            dhangoContainer.appendChild(paymentMethodFormContainer);
 
             this.#fieldSets.push(cardFieldSet);
-
-            buttonsPanel.appendChild(this.createButtonPanel(dhangoPaymentMethod.Card, this.#localization.getTranslation("card")));
         }
 
         if (this.supportedPaymentMethods.includes(dhangoPaymentMethod.ACH)) {
-            var achFieldSet = document.createElement("fieldset");
+            const achFieldSet = document.createElement("fieldset");
 
             achFieldSet.setAttribute("id", dhangoPaymentMethod.ACH);
             achFieldSet.style.display = "none";
 
-            var bankAccountTypeSection = document.createElement("span");
+            const bankAccountTypeSection = document.createElement("span");
 
             this.addSelectionOption(bankAccountTypeSection, "CorporateChecking", this.#localization.getTranslation("corporateChecking"), "bankAccountType", true);
             this.addSelectionOption(bankAccountTypeSection, "CorporateSavings", this.#localization.getTranslation("corporateSavings"), "bankAccountType", false);
@@ -190,9 +235,9 @@ const dhango = class {
 
             achFieldSet.appendChild(bankAccountTypeSection);
 
-            var inputContainer = document.createElement("div");
-
+            let inputContainer = document.createElement("div");
             inputContainer.id = "bankAccountHolderContainer";
+            inputContainer.setAttribute('class', formFieldsRowCssClass);
 
             inputContainer.appendChild(this.createFormElement("bankAccountHolder", this.#localization.getTranslation("bankAccountHolder"), { placeholder: this.#localization.getTranslation("bankAccountHolder") }));
             inputContainer.appendChild(this.createFormElement("routingNumber", this.#localization.getTranslation("routingNumber"), { numbersOnly: true, minimumLength: 9, maximumLength: 9, placeholder: "123456789" }));
@@ -200,33 +245,46 @@ const dhango = class {
             achFieldSet.appendChild(inputContainer);
 
             inputContainer = document.createElement("div");
-
             inputContainer.id = "bankAccountNumberContainer";
+            inputContainer.setAttribute('class', formFieldsRowCssClass);
 
             inputContainer.appendChild(this.createFormElement("bankAccountNumber", this.#localization.getTranslation("bankAccountNumber"), { numbersOnly: true, minimumLength: 4, maximumLength: 16, placeholder: "123456" }));
             inputContainer.appendChild(this.createFormElement("confirmBankAccountNumber", this.#localization.getTranslation("confirmBankAccountNumber"), { numbersOnly: true, minimumLength: 4, maximumLength: 16, placeholder: "123456" }));
 
             achFieldSet.appendChild(inputContainer);
 
-            dhangoContainer.appendChild(achFieldSet);
+            const radio = this.createRadio({
+                name: 'paymentMethod',
+                value: dhangoPaymentMethod.ACH,
+                label: this.#localization.getTranslation('ach'),
+                iconCssClass: 'radio-label-icon-ach'
+            });
+            const formContainer = this.createPaymentMethodFormContainer(radio, [`payment-method-${dhangoPaymentMethod.ACH}`]);
+            formContainer
+              .getElementsByClassName('fieldset')[0]
+              .appendChild(achFieldSet);
+            dhangoContainer.appendChild(formContainer);
 
             this.#fieldSets.push(achFieldSet);
-
-            buttonsPanel.appendChild(this.createButtonPanel(dhangoPaymentMethod.ACH, this.#localization.getTranslation("ach")));
         }
 
         if (this.#fieldSets.length > 0) {
-            this.#fieldSets[0].style.display = null;
             this.#paymentMethod = this.#fieldSets[0].id;
+            dhangoContainer.querySelector(`input[type='radio'][value=${this.#paymentMethod}]`).checked = true;
             this.setPaymentMethod(this.#paymentMethod);
 
-            if (this.#fieldSets[0].form != null)
+
+            if (this.#fieldSets[0].form != null) {
                 this.#fieldSets[0].form.addEventListener('submit', this.validate);
+            }
         }
 
         // Hide the button panels if there are not multiple payment method options.
         if (this.#fieldSets.length <= 1) {
-            buttonsPanel.style.display = 'none';
+            const paymentMethodRadioButtons = dhangoContainer.getElementsByClassName('radio-container');
+            for (const radio of paymentMethodRadioButtons) {
+                radio.style.display = 'none';
+            }
         }
 
         var bankAccountNumber = document.getElementById('bankAccountNumber');
@@ -247,6 +305,21 @@ const dhango = class {
         if (cardExpiration != null) {
             cardExpiration.addEventListener('blur', (event) => {
                 this.validateCardExpiration(cardExpiration, this);
+            });
+        }
+
+        // set radio button selected state change handlers
+        const paymentMethodRadioButtons = dhangoContainer
+          .querySelectorAll('input[type=\'radio\'][name=\'paymentMethod\']');
+        const self = this;
+        for (let i = 0; i < paymentMethodRadioButtons.length; i++) {
+            const radioButton = paymentMethodRadioButtons[i];
+            radioButton.addEventListener('change', function() {
+                self.setPaymentMethod(this.value);
+
+                if (self.changePaymentMethodHandler != null) {
+                    self.changePaymentMethodHandler();
+                }
             });
         }
     }
@@ -515,31 +588,6 @@ const dhango = class {
         return formElement;
     }
 
-    createButtonPanel(paymentMethod, labelText) {
-        var buttonPanel = document.createElement("span");
-
-        buttonPanel.setAttribute("class", "button-panel");
-        buttonPanel.setAttribute("id", paymentMethod + '-button-panel');
-        buttonPanel.style.cursor = "pointer";
-
-        buttonPanel.onclick = event => {
-            this.setPaymentMethod(paymentMethod);
-
-            if (this.changePaymentMethodHandler != null) {
-                this.changePaymentMethodHandler();
-            }
-        }
-
-        var label = document.createElement("label");
-
-        label.textContent = labelText;
-        label.style.cursor = "pointer";
-
-        buttonPanel.appendChild(label);
-
-        return buttonPanel;
-    }
-
     addSelectionOption(section, value, text, groupName, selected) {
         var option = document.createElement("input");
         option.type = "radio";
@@ -559,28 +607,29 @@ const dhango = class {
         section.appendChild(label);
     }
 
+    setRequiredOnChildrenInputs(parent, isRequired) {
+        for (const input of parent.getElementsByTagName("input")) {
+            input.setAttribute("data-required", isRequired);
+        }
+    }
+
     setPaymentMethod(paymentMethod) {
         this.#paymentMethod = paymentMethod;
 
         this.#fieldSets.forEach(function (fieldSet) {
-            var button = document.getElementById(fieldSet.id + '-button-panel');
+            const [paymentMethodFormContainer] = document
+              .getElementsByClassName(`payment-method-container payment-method-${fieldSet.id}`);
 
-            if (fieldSet.id == paymentMethod) {
+            if (fieldSet.id === paymentMethod) {
                 fieldSet.style.display = null;
-                button.classList.add('activeTab');
-
-                for (var input of fieldSet.getElementsByTagName("input")) {
-                    input.setAttribute("data-required", true);
-                }
+                paymentMethodFormContainer.classList.add('payment-method-container-active');
+                this.setRequiredOnChildrenInputs(paymentMethodFormContainer, true);
             } else {
                 fieldSet.style.display = "none";
-                button.classList.remove('activeTab');
-
-                for (var input of fieldSet.getElementsByTagName("input")) {
-                    input.setAttribute("data-required", false);
-                }
+                paymentMethodFormContainer.classList.remove('payment-method-container-active');
+                this.setRequiredOnChildrenInputs(paymentMethodFormContainer, false);
             }
-        });
+        }, this);
     }
 
     async saveToken(postTokenHandler, postTokenErrorHandler) {

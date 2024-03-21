@@ -1,14 +1,81 @@
-﻿input[name="bankAccountType"] {
+﻿html {
+    --dh-fieldset-x-padding: 16px;
+    --dh-label-padding-top: 10px;
+    --dh-primary-black: #212529;
+}
+
+/* Payment Method container */
+.payment-method-container {
+    margin: 16px 0;
+
+    border: 1px solid gray;
+}
+
+.payment-method-container.payment-method-container-active {
+    border-color: #545af2;
+}
+/* End: Payment Method container */
+
+/* Payment Method selection radio button */
+.radio-container {
+    display: block;
+    padding: var(--dh-fieldset-x-padding);
+}
+
+.radio-input {
+    margin: 0;
+    height: 16px;
+    width: 16px;
+}
+
+.radio-label,
+.radio-input,
+.radio-label-text,
+.radio-label-icon {
+    vertical-align: middle;
+}
+
+.radio-label {
+    margin-left: 6px;
+}
+
+.radio-label-icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: 24px;
+
+    background-color: var(--dh-primary-black);
+}
+
+.radio-label-icon-card {
+    mask-image: url('/icons/card.svg');
+}
+
+.radio-label-icon-ach {
+    mask-image: url('/icons/bank.svg');
+}
+
+.radio-label-text {
+    margin-left: 6px;
+}
+/* End: Payment Method selection radio button */
+
+input[name="bankAccountType"] {
     display: none;
 }
 
 #ACH > span:first-of-type {
     display: flex;
     column-gap: 10px;
+    margin-top: var(--dh-label-padding-top);
 }
 
 #ACH > span > label {
-    padding: 10px;
+    padding: var(--dh-label-padding-top);
     background: #EDEFFE;
     color: #8F8CE3;
     border-radius: 8px;
@@ -32,7 +99,7 @@
 .error-label-container {
     color: #f25f6f;
     float: right;
-    margin: 5px 0px 0;
+    margin: 5px 0 0;
     text-align: right;
     font-size: 10px;
 }
@@ -69,65 +136,28 @@ input {
     border-color: #f25f6f;
 }
 
+.fieldset {
+    padding: 0 var(--dh-fieldset-x-padding);
+}
+
+.fieldset > fieldset {
+    padding-bottom: var(--dh-fieldset-x-padding);
+}
+
 fieldset {
     border: 0;
     padding: 0;
     margin: 0;
 }
 
-#dhangoContainer label {
+.fieldset label {
     display: inline;
-}
-
-#dhangoContainer > div:first-of-type {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #F4F3F8;
-    border-radius: 5px;
-    display: flex;
 }
 
 #cardVerificationContainer, #cardNumberContainer, #bankAccountHolderContainer, #bankAccountNumberContainer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 15px;
-}
-
-.button-panel {
-    width: 100%;
-    text-align: center;
-    padding: 20px 10px;
-    font-weight: bold;
-    border-bottom: 3px solid transparent;
-}
-
-#Card-button-panel label, #ACH-button-panel label {
-    position: relative;
-}
-
-#Card-button-panel label::before {
-    background-image: url('/icons/card.svg');
-    background-repeat: no-repeat;
-    content: "";
-    position: absolute;
-    top: 55%;
-    left: -40px;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    background-size: 100%,100%;
-}
-
-#ACH-button-panel label::before {
-    background-image: url('/icons/bank.svg');
-    background-repeat: no-repeat;
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -40px;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    background-size: 100%,100%;
 }
 
 ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder {
