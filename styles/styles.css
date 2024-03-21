@@ -1,0 +1,290 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  background-color: #fff;
+
+  font-family: Inter, Helvetica, sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+h1 {
+  margin: 0;
+}
+
+.container {
+  padding: 60px 20px 20px;
+
+  background-color: #fff;
+}
+
+.logo {
+  text-align: center;
+}
+
+.logo-fallback-text {
+  color: #344054;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.72px;
+}
+
+.email-title {
+  margin-top: 32px;
+
+  color: #3288ec;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.9px;
+  text-align: center;
+}
+
+.email-subtitle {
+  margin-top: 28px;
+  padding: 0 16px;
+
+  color: #475467;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.panel {
+  margin-top: 48px;
+  padding: 24px 32px;
+
+  border: 1px solid #e3eaef;
+  border-radius: 16px;
+}
+
+.panel-header {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.header-left {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+
+.transaction-type-icon-container {
+  flex: 0 0 36px;
+  height: 36px;
+  margin-right: 10px;
+  padding: 6px;
+
+  border-radius: 6px;
+}
+
+.transaction-type-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.transaction-type-icon-container.event-Authorization {
+  background-color: #cdefff;
+}
+
+.transaction-type-icon-container.event-Batch {
+  background-color: #f4ebfb;
+}
+
+.transaction-type-icon-container.event-Capture {
+  background-color: #c8ffd4;
+}
+
+.transaction-type-icon-container.event-Chargeback {
+  background-color: #ffdede;
+}
+
+.transaction-type-icon-container.event-Payment {
+  background-color: #d0ffcc;
+}
+
+.transaction-type-icon-container.event-Refund {
+  background-color: #dcebfd;
+}
+
+.transaction-type-icon-container.event-Reject {
+  background-color: #ffeed4;
+}
+
+.transaction-type-icon-container.event-Return {
+  background-color: #ffefef;
+}
+
+.transaction-type-icon-container.event-Void {
+  background-color: #e9ecf4;
+}
+
+.transaction-type {
+  color: #475467;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.transaction-id {
+  color: #8a93a6;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.header-right {
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  color: #475467;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.transaction-event {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin-top: 8px;
+  padding: 16px 24px 16px 12px;
+
+  background-color: #ffefef;
+  border-radius: 10px;
+}
+
+.transaction-event-icon {
+  flex: 0 0 18px;
+  height: 18px;
+}
+
+.transaction-event-text {
+  flex-grow: 1;
+  margin-left: 16px;
+
+  color: #ed4145;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.transaction-details {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.key-value {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  padding: 7px 0;
+}
+
+.key {
+  flex: 0 0 30%;
+
+  color: #344054;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.value {
+  flex: 0 0 calc(70% - 52px);
+  margin-left: 52px;
+
+  color: #475467;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.transaction-totals {
+  margin: 24px -20px 0;
+  padding: 18px 20px 32px;
+
+  list-style-type: none;
+
+  border-radius: 16px;
+  background-color: #f7f9fb;
+}
+
+.totals-key-value {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  line-height: 42px;
+}
+
+.totals-key-icon {
+  height: 18px;
+  width: 18px;
+
+  vertical-align: middle;
+}
+
+.totals-key-text {
+  margin-left: 10px;
+
+  color: #344054;
+  font-size: 14px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.totals-value {
+  color: #8a93a6;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.32px;
+  text-align: right;
+}
+
+.totals-value.strong {
+  color: #101828;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+
+.section-thank-you {
+  margin-top: 22px;
+
+  color: #475467;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.footer {
+  margin: 200px 0 0;
+  padding: 24px 24px 55px;
+
+  background-color: #083a4a;
+
+  text-align: center;
+}
+
+.footer p, .footer a {
+  margin: 0;
+  padding: 4px 0;
+
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+}

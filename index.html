@@ -4,11 +4,137 @@
   <meta charset="UTF-8">
   <title>dhango</title>
 
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"
+  />
   <link rel="stylesheet" href="/styles/styles.css"/>
 </head>
 <body>
 <div class="container">
+  <div class="logo">
+    <img
+      src="https://res.cloudinary.com/dyc7bvmyo/image/upload/c_fit,h_150,w_250/v1692463061/AccountLogos/d04knpgxjim43tfjq4ul.jpg" class="logo-image" alt="company-logo" />
+
+    <!-- THIS IS FALLBACK TEXT IF LOGO IS NOT AVAILABLE -->
+    <!--<p class="logo-fallback-text">Company Name</p>-->
+  </div>
+  <h1 class="email-title">Thank you for your payment</h1>
+  <p class="email-subtitle">
+    There are 10 type of people on Earth - those who understand binary numbers and those
+    who don't
+  </p>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="header-left">
+        <div class="transaction-type-icon-container event-Authorization">
+          <!-- Only one image icon will be shown depending on the type of the transaction -->
+          <img src="https://res.cloudinary.com/dhango/image/upload/v1711113832/EmailIcons/event-authorization.png" class="transaction-type-icon" alt="Authorization
+          transaction icon"/>
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113864/EmailIcons/event-batch.png" class="transaction-type-icon" alt="Batch transaction icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113891/EmailIcons/event-capture.png" class="transaction-type-icon" alt="Capture transaction
+          icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113925/EmailIcons/event-chargeback.png" class="transaction-type-icon" alt="Chargeback
+          transaction icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113941/EmailIcons/event-payment.png" class="transaction-type-icon" alt="Payment transaction
+          icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113963/EmailIcons/event-refund.png" class="transaction-type-icon" alt="Refund transaction icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711113986/EmailIcons/event-reject.png" class="transaction-type-icon" alt="Reject transaction icon"/>-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711114003/EmailIcons/event-return.png" class="transaction-type-icon" alt="Return transaction icon" />-->
+          <!--<img src="https://res.cloudinary.com/dhango/image/upload/v1711114017/EmailIcons/event-void.png" class="transaction-type-icon" alt="Void transaction icon"/>-->
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-type">Return</div>
+          <div class="transaction-id">Transaction #5822</div>
+        </div>
+      </div>
+      <!-- this should be already preformatted in DTO -->
+      <div class="header-right">02/04/2024</div>
+    </div>
+
+    <!-- events -->
+    <div class="transaction-events">
+      <div class="transaction-event">
+        <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
+        <span class="transaction-event-text">
+          The customers account has insufficient funds to cover this payment.
+        </span>
+      </div>
+
+      <div class="transaction-event">
+        <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
+        <span class="transaction-event-text">
+          The customers account has insufficient funds to cover this payment.
+        </span>
+      </div>
+    </div>
+
+    <!-- transaction details -->
+    <ul class="transaction-details">
+      <li class="key-value">
+        <span class="key">Payer</span>
+        <span class="value">John Smith</span>
+      </li>
+      <li class="key-value">
+        <span class="key">Email Address</span>
+        <span class="value">john.smith@test.com</span>
+      </li>
+      <li class="key-value">
+        <span class="key">Customer ID</span>
+        <span class="value">1112</span>
+      </li>
+      <li class="key-value">
+        <span class="key">Order ID</span>
+        <span class="value">2222</span>
+      </li>
+      <li class="key-value">
+        <span class="key">Payment Method</span>
+        <span class="value">VISA .... - 2664</span>
+      </li>
+    </ul>
+
+    <!-- totals-->
+    <ul class="transaction-totals">
+      <li class="totals-key-value">
+        <span class="totals-key">
+          <img src="/icons/email/totals-sub-total.png" class="totals-key-icon"/>
+          <span class="totals-key-text">Sub Total</span>
+        </span>
+        <span class="totals-value">$586.70</span>
+      </li>
+      <li class="totals-key-value">
+        <span class="totals-key">
+          <img src="/icons/email/totals-payer-fee.png" class="totals-key-icon"/>
+          <span class="totals-key-text">Payer Fee</span>
+        </span>
+        <span class="totals-value">$17.80</span>
+      </li>
+      <li class="totals-key-value">
+        <span class="totals-key">
+          <img src="/icons/email/totals-total.png" class="totals-key-icon"/>
+          <span class="totals-key-text">Total</span>
+        </span>
+        <span class="totals-value strong">$604.50</span>
+      </li>
+    </ul>
+  </div>
+
+  <p class="section-thank-you">
+    Thank you,<br/>
+    Segment
+  </p>
 
 </div>
+
+<footer class="footer">
+  <p class="copyright">&#169; Demo Platform. All Rights reserved.</p>
+  <p class="contact">
+    If you have any questions please contact us at info@dhango.com
+  </p>
+  <p class="address">Austin, Texas</p>
+  <a href="#">Unsubscribe</a>
+</footer>
+
 </body>
 </html>
