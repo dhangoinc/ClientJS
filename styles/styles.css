@@ -60,19 +60,20 @@ h1 {
 
 .panel {
   margin-top: 48px;
-  padding: 24px 32px;
+  padding: 24px 12px;
 
   border: 1px solid #e3eaef;
   border-radius: 16px;
 }
 
-.panel-header {
-  margin-bottom: 18px;
-}
-
 .table {
   width: 100%;
   border-collapse: separate;
+}
+
+.table-transaction-type {
+  margin-bottom: 18px;
+  padding: 0 20px;
 }
 
 .td-transaction-icon {
@@ -150,6 +151,7 @@ h1 {
 }
 
 .table-events {
+  padding: 0 20px;
   border-spacing: 0 8px;
 }
 
@@ -185,7 +187,8 @@ h1 {
 }
 
 .transaction-details {
-  margin: 12px 0 0;
+  margin-top: 12px;
+  padding: 0 20px;
 }
 
 .key {
@@ -207,9 +210,9 @@ h1 {
   font-weight: 400;
 }
 
-.transaction-totals {
-  margin: 24px -20px 0;
-  padding: 18px 20px;
+.table-transaction-totals {
+  margin-top: 24px;
+  padding: 18px 20px 32px;
 
   border-radius: 16px;
   background-color: #f7f9fb;
