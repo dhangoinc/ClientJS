@@ -21,7 +21,7 @@ h1 {
 }
 
 .container {
-  padding: 60px 20px 20px;
+  padding: 60px 20px 200px;
 
   background-color: #fff;
 }
@@ -47,17 +47,6 @@ h1 {
   text-align: center;
 }
 
-.email-subtitle {
-  margin-top: 28px;
-  padding: 0 16px;
-
-  color: #475467;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 22px;
-}
-
 .panel {
   margin-top: 48px;
   padding: 24px 12px;
@@ -76,7 +65,7 @@ h1 {
   padding: 0 20px;
 }
 
-.td-transaction-icon {
+.transaction-icon-cell {
   width: 36px;
 }
 
@@ -212,7 +201,7 @@ h1 {
 
 .table-transaction-totals {
   margin-top: 24px;
-  padding: 18px 20px 32px;
+  padding: 18px 20px;
 
   border-radius: 16px;
   background-color: #f7f9fb;
@@ -254,7 +243,7 @@ h1 {
 }
 
 .section-thank-you {
-  margin-top: 22px;
+  margin: 22px 20px 0;
 
   color: #475467;
   font-size: 14px;
@@ -263,7 +252,7 @@ h1 {
 }
 
 .footer {
-  margin: 200px 0 0;
+  margin: 0;
   padding: 24px 24px 55px;
 
   background-color: #083a4a;
