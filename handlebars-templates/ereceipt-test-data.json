@@ -1,0 +1,30 @@
+{
+  "Subject": "this is the subject",
+  "Header": "Thank you for your payment",
+  "CompanyName": "Acme Incorporated",
+  "CompanyUri": "https://example.com",
+  "LogoUri" : "",
+  "TransactionId": "5822",
+  "TransactionEventType": "Chargeback",
+  "TransactionDate": "02/04/2024",
+  "TransactionEventContexts": [
+    "01 - The customer's account has insufficient funds to cover this payment.",
+    "02 - The customer's account has insufficient funds to cover this payment."
+  ],
+  "CustomFields": [
+    {"label": "Custom Field 1", "value": "Custom Field Value 1" },
+    {"label": "Custom Field 2", "value": "Custom Field Value 2" }
+  ],
+  "Payer": "John Smith",
+  "EmailAddress": "john.smith@test.com",
+  "CustomerID": "1112",
+  "OrderID": "2222",
+  "PaymentMethod": "VISA .... - 2664",
+  "SubTotal": 587.60,
+  "PayerFee": 17.80,
+  "Total": 604.50,
+  "Copyright": "Demo Platform. All Rights reserved.",
+  "UnsubscribeURL": "#",
+  "Address": "Austin, Texas",
+  "ContactEmail": "info@dnago.com"
+}

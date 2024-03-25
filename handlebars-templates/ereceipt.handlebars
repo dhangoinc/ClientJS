@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Dhango</title>
+
+  <style>
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+
+      background-color: #fff;
+
+      font-family: Inter, Helvetica, sans-serif;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .container {
+      padding: 60px 20px 200px;
+
+      background-color: #fff;
+    }
+
+    .logo {
+      text-align: center;
+    }
+
+    .logo-fallback-text {
+      color: #344054;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.72px;
+    }
+
+    .email-title {
+      margin-top: 32px;
+
+      color: #3288ec;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.9px;
+      text-align: center;
+    }
+
+    .panel {
+      margin-top: 48px;
+      padding: 24px 12px;
+
+      border: 1px solid #e3eaef;
+      border-radius: 16px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+    }
+
+    .table-transaction-type {
+      margin-bottom: 18px;
+      padding: 0 20px;
+    }
+
+    .transaction-icon-cell {
+      width: 36px;
+    }
+
+    .transaction-type-icon-container {
+      flex: 0 0 36px;
+      height: 36px;
+      margin-right: 10px;
+      padding: 6px;
+
+      border-radius: 6px;
+    }
+
+    .transaction-type-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .transaction-type-icon-container.event-Authorization {
+      background-color: #cdefff;
+    }
+
+    .transaction-type-icon-container.event-Batch {
+      background-color: #f4ebfb;
+    }
+
+    .transaction-type-icon-container.event-Capture {
+      background-color: #c8ffd4;
+    }
+
+    .transaction-type-icon-container.event-Chargeback {
+      background-color: #ffdede;
+    }
+
+    .transaction-type-icon-container.event-Payment {
+      background-color: #d0ffcc;
+    }
+
+    .transaction-type-icon-container.event-Refund {
+      background-color: #dcebfd;
+    }
+
+    .transaction-type-icon-container.event-Reject {
+      background-color: #ffeed4;
+    }
+
+    .transaction-type-icon-container.event-Return {
+      background-color: #ffefef;
+    }
+
+    .transaction-type-icon-container.event-Void {
+      background-color: #e9ecf4;
+    }
+
+    .transaction-type {
+      color: #475467;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .transaction-id {
+      color: #8a93a6;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .header-right {
+      color: #475467;
+      font-size: 14px;
+      font-weight: 400;
+      text-align: right;
+    }
+
+    .table-events {
+      padding: 0 20px;
+      border-spacing: 0 8px;
+    }
+
+    .transaction-event {
+      background-color: #ffefef;
+    }
+
+    .transaction-event-icon-cell {
+      margin-bottom: 8px;
+      padding: 16px 0 16px 12px;
+      width: 18px;
+
+      border-radius: 10px 0 0 10px;
+      line-height: 0;
+      vertical-align: middle;
+    }
+
+    .transaction-event-icon {
+      height: 18px;
+      width: 18px;
+    }
+
+    .transaction-event-message-cell {
+      padding: 16px 24px 16px 16px;
+      border-radius: 0 10px 10px 0;
+      vertical-align: middle;
+    }
+
+    .transaction-event-text {
+      color: #ed4145;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .transaction-details {
+      margin-top: 12px;
+      padding: 0 20px;
+    }
+
+    .key {
+      padding-top: 7px;
+      padding-bottom: 7px;
+      width: 30%;
+
+      color: #344054;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .value {
+      padding-left: 50px;
+      width: 70%;
+
+      color: #475467;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .table-transaction-totals {
+      margin-top: 24px;
+      padding: 18px 20px;
+
+      border-radius: 16px;
+      background-color: #f7f9fb;
+    }
+
+    .totals-key {
+      height: 42px;
+    }
+
+    .totals-key-icon {
+      height: 18px;
+      width: 18px;
+
+      vertical-align: middle;
+    }
+
+    .totals-key-text {
+      margin-left: 10px;
+
+      color: #344054;
+      font-size: 14px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
+    .totals-value {
+      color: #8a93a6;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: -0.32px;
+      text-align: right;
+    }
+
+    .totals-value.strong {
+      color: #101828;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.6px;
+    }
+
+    .section-thank-you {
+      margin: 22px 20px 0;
+
+      color: #475467;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+    }
+
+    .footer {
+      margin: 0;
+      padding: 24px 24px 55px;
+
+      background-color: #083a4a;
+
+      text-align: center;
+    }
+
+    .footer p, .footer a {
+      margin: 0;
+      padding: 4px 0;
+
+      color: #fff;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body style="background: whitesmoke; margin: 0;">
+<div class="container">
+  <div class="logo">
+    {{#if LogoUri }}
+      <img src="{{ LogoUri }}" alt="company-logo"/>
+    {{else}}
+      <p class="logo-fallback-text">{{ CompanyName }}</p>
+    {{/if}}
+  </div>
+  {{#equals TransactionEventType "Payment"}}
+    <h1 class="email-title">{{ Header }}</h1>
+  {{/equals}}
+
+  {{#equals TransactionEventType "Capture"}}
+    <h1 class="email-title">{{ Header }}</h1>
+  {{/equals}}
+
+  <div class="panel">
+    <table class="table table-transaction-type">
+      <tr>
+        <td class="transaction-icon-cell">
+          <div class="transaction-type-icon-container event-{{ TransactionEventType }}">
+            {{#equals TransactionEventType "Authorization"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113832/EmailIcons/event-authorization.png"
+                   class="transaction-type-icon" alt="Authorization transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Batch"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113864/EmailIcons/event-batch.png"
+                   class="transaction-type-icon" alt="Batch transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Capture"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113891/EmailIcons/event-capture.png"
+                   class="transaction-type-icon" alt="Capture transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Chargeback"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113925/EmailIcons/event-chargeback.png"
+                   class="transaction-type-icon" alt="Chargeback transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Payment"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113941/EmailIcons/event-payment.png"
+                   class="transaction-type-icon" alt="Payment transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Refund"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113963/EmailIcons/event-refund.png"
+                   class="transaction-type-icon" alt="Refund transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Reject"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113986/EmailIcons/event-reject.png"
+                   class="transaction-type-icon" alt="Reject transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Return"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711114003/EmailIcons/event-return.png"
+                   class="transaction-type-icon" alt="Return transaction icon"/>
+            {{/equals}}
+
+            {{#equals TransactionEventType "Void"}}
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711114017/EmailIcons/event-void.png"
+                   class="transaction-type-icon" alt="Void transaction icon"/>
+            {{/equals}}
+          </div>
+        </td>
+        <td>
+          <div class="transaction-type">{{ TransactionEventType }}</div>
+          <div class="transaction-id">Transaction #{{ TransactionId }}</div>
+        </td>
+        <td class="header-right">{{ TransactionDate }}</td>
+      </tr>
+    </table>
+
+    <!-- events -->
+    <!-- NOTE: Sendgrid template preview does not seem to render the section below even if length is > 0 but that still works with real email -->
+    {{#greaterThan (length TransactionEventContexts) 0}}
+      <table class="table table-events">
+        {{#each TransactionEventContexts}}
+          <tr class="transaction-event">
+            <td class="transaction-event-icon-cell">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
+                   class="transaction-event-icon" alt="Transaction event icon"/>
+            </td>
+            <td class="transaction-event-message-cell">
+              <span class="transaction-event-text">{{this}}</span>
+            </td>
+          </tr>
+        {{/each}}
+      </table>
+    {{/greaterThan}}
+
+    <!-- transaction details -->
+    <table class="table transaction-details">
+      <tr>
+        <td class="key"><strong>Payer</strong></td>
+        <td class="value">{{ Payer }}</td>
+      </tr>
+      <tr>
+        <td class="key"><strong>Email Address</strong></td>
+        <td class="value">{{ EmailAddress }}</td>
+      </tr>
+      {{#each CustomFields}}
+        <tr>
+          <td class="key"><strong>{{ this.label }}</strong></td>
+          <td class="value">{{ this.value }}</td>
+        </tr>
+      {{/each}}
+      <tr>
+        <td class="key"><strong>Customer ID</strong></td>
+        <td class="value">{{ CustomerID }}<strong></strong></td>
+      </tr>
+      <tr>
+        <td class="key"><strong>Order ID</strong></td>
+        <td class="value">{{ OrderID }}</td>
+      </tr>
+      <tr>
+        <td class="key"><strong>Payment Method</strong></td>
+        <td class="value">{{ PaymentMethod }}</td>
+      </tr>
+    </table>
+
+    <!-- totals-->
+    <table class="table table-transaction-totals">
+      {{#greaterThan PayerFee 0}}
+        <tr>
+          <td class="totals-key">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
+                 class="totals-key-icon" alt="Subtotal icon"/>
+            <span class="totals-key-text">Sub Total</span>
+          </td>
+          <td class="totals-value">{{ CurrencyPrefix }}{{ SubTotal }}</td>
+        </tr>
+        <tr>
+          <td class="totals-key">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711148190/EmailIcons/totals-payer-fee.png"
+                 class="totals-key-icon" alt="Payer fee icon"/>
+            <span class="totals-key-text">Payer Fee</span>
+          </td>
+          <td class="totals-value">{{ CurrencyPrefix }}{{ PayerFee }}</td>
+        </tr>
+      {{/greaterThan}}
+      <tr>
+        <td class="totals-key">
+          <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
+               class="totals-key-icon" alt="Total icon"/>
+          <span class="totals-key-text">Total</span>
+        </td>
+        <td class="totals-value strong">{{ CurrencyPrefix }}{{ Total }}</td>
+      </tr>
+    </table>
+  </div>
+  <p class="section-thank-you">
+    Thank you,<br/>
+    {{ CompanyName }}
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="copyright">&#169; {{ Copyright }}</p>
+  <p class="contact">
+    If you have any questions please contact us at <a href="mailto:{{ContactEmail}}">{{ ContactEmail }}</a>
+  </p>
+  <p class="address">{{ Address }}</p>
+  <a href="{{ UnsubacribeURL }}">Unsubscribe</a>
+</footer>
+</body>
+</html>
