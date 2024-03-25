@@ -67,18 +67,15 @@ h1 {
 }
 
 .panel-header {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
   margin-bottom: 26px;
 }
 
-.header-left {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
+.table {
+  width: 100%;
+}
+
+.td-transaction-icon {
+  width: 36px;
 }
 
 .transaction-type-icon-container {
@@ -145,9 +142,6 @@ h1 {
 }
 
 .header-right {
-  flex-grow: 0;
-  flex-shrink: 0;
-
   color: #475467;
   font-size: 14px;
   font-weight: 400;
@@ -155,25 +149,26 @@ h1 {
 }
 
 .transaction-event {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
+  position: relative;
   margin-top: 8px;
-  padding: 16px 24px 16px 12px;
+  padding: 16px 24px 16px 40px;
 
   background-color: #ffefef;
   border-radius: 10px;
 }
 
 .transaction-event-icon {
-  flex: 0 0 18px;
   height: 18px;
+  width: 18px;
+
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+
 }
 
 .transaction-event-text {
-  flex-grow: 1;
-  margin-left: 16px;
-
   color: #ed4145;
   font-size: 14px;
   line-height: 18px;
@@ -181,20 +176,12 @@ h1 {
 
 .transaction-details {
   margin: 12px 0 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-.key-value {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  padding: 7px 0;
 }
 
 .key {
-  flex: 0 0 30%;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  width: 30%;
 
   color: #344054;
   font-size: 14px;
@@ -202,8 +189,8 @@ h1 {
 }
 
 .value {
-  flex: 0 0 calc(70% - 52px);
-  margin-left: 52px;
+  padding-left: 50px;
+  width: 70%;
 
   color: #475467;
   font-size: 14px;
@@ -212,21 +199,14 @@ h1 {
 
 .transaction-totals {
   margin: 24px -20px 0;
-  padding: 18px 20px 32px;
-
-  list-style-type: none;
+  padding: 18px 20px;
 
   border-radius: 16px;
   background-color: #f7f9fb;
 }
 
-.totals-key-value {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-
-  line-height: 42px;
+.totals-key {
+  height: 42px;
 }
 
 .totals-key-icon {
