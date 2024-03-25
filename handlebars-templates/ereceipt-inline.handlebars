@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Dhango</title>
+</head>
+
+<body style="background: whitesmoke; margin: 0; font-family: Inter, Helvetica, sans-serif;">
+<div style="padding: 60px 20px 200px;background-color: #fff;">
+  <div style="text-align: center;">
+    {{#if LogoUri }}
+      <img src="{{ LogoUri }}" alt="company-logo"/>
+    {{else}}
+      <p style="margin: 0; color: #344054; font-size: 24px; font-weight: 600; letter-spacing: -0.72px; font-family: Inter, Helvetica, sans-serif;">
+        {{ CompanyName }}
+      </p>
+    {{/if}}
+  </div>
+  {{#equals TransactionEventType "Payment"}}
+    <h1 style="margin: 32px 0 0 0; color: #3288ec; font-family: Inter, Helvetica, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: -0.9px; text-align: center;">
+      {{ Header }}
+    </h1>
+  {{/equals}}
+
+  {{#equals TransactionEventType "Capture"}}
+    <h1 style="margin: 32px 0 0 0; color: #3288ec; font-family: Inter, Helvetica, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: -0.9px; text-align: center;">
+      {{ Header }}
+    </h1>
+  {{/equals}}
+
+  <div style="margin-top: 48px; padding: 24px 12px; border: 1px solid #e3eaef; border-radius: 16px;">
+    <table style="width: 100%; border-collapse: separate; margin-bottom: 18px; padding: 0 20px;">
+      <tr>
+        <td style="width: 36px;">
+          {{#equals TransactionEventType "Authorization"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #cdefff; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113832/EmailIcons/event-authorization.png"
+                   style="width: 24px;height: 24px;" alt="Authorization transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Batch"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #f4ebfb; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113864/EmailIcons/event-batch.png"
+                   style="width: 24px;height: 24px;" alt="Batch transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Capture"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #c8ffd4; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113891/EmailIcons/event-capture.png"
+                   style="width: 24px;height: 24px;" alt="Capture transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Chargeback"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #ffdede; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113925/EmailIcons/event-chargeback.png"
+                   style="width: 24px;height: 24px;" alt="Chargeback transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Payment"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #d0ffcc; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113941/EmailIcons/event-payment.png"
+                   style="width: 24px;height: 24px;" alt="Payment transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Refund"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #dcebfd; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113963/EmailIcons/event-refund.png"
+                   style="width: 24px;height: 24px;" alt="Refund transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Reject"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #ffeed4; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113986/EmailIcons/event-reject.png"
+                   style="width: 24px;height: 24px;" alt="Reject transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Return"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #ffefef; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711114003/EmailIcons/event-return.png"
+                   style="width: 24px;height: 24px;" alt="Return transaction icon"/>
+            </div>
+          {{/equals}}
+
+          {{#equals TransactionEventType "Void"}}
+            <div style="height: 36px;margin-right: 10px;padding: 6px;width: 36px;border-radius: 6px; background-color: #e9ecf4; box-sizing: border-box;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711114017/EmailIcons/event-void.png"
+                   style="width: 24px;height: 24px;" alt="Void transaction icon"/>
+            </div>
+          {{/equals}}
+        </td>
+        <td>
+          <div style="color: #475467; font-size: 18px; font-weight: 600; font-family: Inter, Helvetica, sans-serif;">
+            {{ TransactionEventType }}
+          </div>
+          <div style="color: #8a93a6; font-size: 12px; line-height: 18px; white-space: nowrap; font-family: Inter, Helvetica, sans-serif;">
+            Transaction #{{ TransactionId }}
+          </div>
+        </td>
+        <td style="color: #475467; font-size: 14px; font-weight: 400; text-align: right; font-family: Inter, Helvetica, sans-serif;">
+          {{ TransactionDate }}
+        </td>
+      </tr>
+    </table>
+
+    <!-- events -->
+    <!-- NOTE: Sendgrid template preview does not seem to render the section below even if length is > 0 but that still works with real email -->
+    {{#greaterThan (length TransactionEventContexts) 0}}
+      <table style="width: 100%; border-collapse: separate; padding: 0 20px; border-spacing: 0 8px;">
+        {{#each TransactionEventContexts}}
+          <tr style="background-color: #ffefef;">
+            <td style="margin-bottom: 8px; padding: 16px 0 16px 12px; width: 18px; border-radius: 10px 0 0 10px; line-height: 0; vertical-align: middle;">
+              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
+                   style="height: 18px; width: 18px;" alt="Transaction event icon"/>
+            </td>
+            <td style="padding: 16px 24px 16px 16px; border-radius: 0 10px 10px 0; vertical-align: middle;">
+              <span style="color: #ed4145; font-size: 14px; line-height: 18px; font-family: Inter, Helvetica, sans-serif;">{{this}}</span>
+            </td>
+          </tr>
+        {{/each}}
+      </table>
+    {{/greaterThan}}
+
+    <!-- transaction details -->
+    <table style="width: 100%; border-collapse: separate; margin-top: 12px; padding: 0 20px;">
+      <tr>
+        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+          <strong>Payer</strong>
+        </td>
+        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+          {{ Payer }}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+          <strong>Email Address</strong>
+        </td>
+        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+          {{ EmailAddress }}
+        </td>
+      </tr>
+      {{#each CustomFields}}
+        <tr>
+          <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+            <strong>{{ this.label }}</strong>
+          </td>
+          <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+            {{ this.value }}
+          </td>
+        </tr>
+      {{/each}}
+      <tr>
+        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+          <strong>Customer ID</strong>
+        </td>
+        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+          {{ CustomerID }}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+          <strong>Order ID</strong>
+        </td>
+        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+          {{ OrderID }}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+          <strong>Payment Method</strong>
+        </td>
+        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+          {{ PaymentMethod }}
+        </td>
+      </tr>
+    </table>
+
+    <!-- totals-->
+    <table style="width: 100%; border-collapse: separate; margin-top: 24px; padding: 18px 20px; border-radius: 16px; background-color: #f7f9fb;">
+      {{#greaterThan PayerFee 0}}
+        <tr>
+          <td style="height: 42px;">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
+                 style="height: 18px; width: 18px; vertical-align: middle;" alt="Subtotal icon"/>
+            <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Sub Total</span>
+          </td>
+          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ SubTotal }}</td>
+        </tr>
+        <tr>
+          <td style="height: 42px;">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711148190/EmailIcons/totals-payer-fee.png"
+                 style="height: 18px; width: 18px; vertical-align: middle;" alt="Payer fee icon"/>
+            <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Payer Fee</span>
+          </td>
+          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ PayerFee }}</td>
+        </tr>
+      {{/greaterThan}}
+      <tr>
+        <td style="height: 42px;">
+          <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
+               style="height: 18px; width: 18px; vertical-align: middle;" alt="Total icon"/>
+          <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Total</span>
+        </td>
+        <td style="text-align: right; font-family: Inter, Helvetica, sans-serif; color: #101828; font-size: 30px; font-weight: 600; letter-spacing: -0.6px;">{{ CurrencyPrefix }}{{ Total }}</td>
+      </tr>
+    </table>
+  </div>
+  <p style="margin: 22px 20px 0; color: #475467; font-size: 14px; font-weight: 400; line-height: 22px;">
+    Thank you,<br/>
+    {{ CompanyName }}
+  </p>
+</div>
+
+<footer style="margin: 0; padding: 24px 24px 55px; background-color: #083a4a; text-align: center;">
+  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">&#169; {{ Copyright }}</p>
+  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
+    If you have any questions please contact us at <a href="mailto:{{ContactEmail}}">{{ ContactEmail }}</a>
+  </p>
+  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">{{ Address }}</p>
+  <a href="{{ UnsubacribeURL }}" style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">Unsubscribe</a>
+</footer>
+</body>
+</html>
