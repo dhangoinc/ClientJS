@@ -67,11 +67,12 @@ h1 {
 }
 
 .panel-header {
-  margin-bottom: 26px;
+  margin-bottom: 18px;
 }
 
 .table {
   width: 100%;
+  border-collapse: separate;
 }
 
 .td-transaction-icon {
@@ -148,24 +149,33 @@ h1 {
   text-align: right;
 }
 
-.transaction-event {
-  position: relative;
-  margin-top: 8px;
-  padding: 16px 24px 16px 40px;
+.table-events {
+  border-spacing: 0 8px;
+}
 
+.transaction-event {
   background-color: #ffefef;
-  border-radius: 10px;
+}
+
+.transaction-event-icon-cell {
+  margin-bottom: 8px;
+  padding: 16px 0 16px 12px;
+  width: 18px;
+
+  border-radius: 10px 0 0 10px;
+  line-height: 0;
+  vertical-align: middle;
 }
 
 .transaction-event-icon {
   height: 18px;
   width: 18px;
+}
 
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-
+.transaction-event-message-cell {
+  padding: 16px 24px 16px 16px;
+  border-radius: 0 10px 10px 0;
+  vertical-align: middle;
 }
 
 .transaction-event-text {

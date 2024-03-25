@@ -57,21 +57,28 @@
     </div>
 
     <!-- events -->
-    <div class="transaction-events">
-      <div class="transaction-event">
-        <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
-        <span class="transaction-event-text">
-          The customers account has insufficient funds to cover this payment.
-        </span>
-      </div>
-
-      <div class="transaction-event">
-        <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
-        <span class="transaction-event-text">
-          The customers account has insufficient funds to cover this payment.
-        </span>
-      </div>
-    </div>
+    <table class="table table-events">
+      <tr class="transaction-event">
+        <td class="transaction-event-icon-cell">
+          <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
+        </td>
+        <td class="transaction-event-message-cell">
+          <span class="transaction-event-text">
+            The customers account has insufficient funds to cover this payment.
+          </span>
+        </td>
+      </tr>
+      <tr class="transaction-event">
+        <td class="transaction-event-icon-cell">
+          <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png" class="transaction-event-icon" alt="Transaction event icon"/>
+        </td>
+        <td class="transaction-event-message-cell">
+          <span class="transaction-event-text">
+            The customers account has insufficient funds to cover this payment.
+          </span>
+        </td>
+      </tr>
+    </table>
 
     <!-- transaction details -->
     <table class="table transaction-details">
