@@ -23,17 +23,11 @@
       </p>
     {{/if}}
   </div>
-  {{#equals TransactionEventType "Payment"}}
+  {{#if Header }}
     <h1 style="margin: 32px 0 0 0; color: #3288ec; font-family: Inter, Helvetica, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: -0.9px; text-align: center;">
       {{ Header }}
     </h1>
-  {{/equals}}
-
-  {{#equals TransactionEventType "Capture"}}
-    <h1 style="margin: 32px 0 0 0; color: #3288ec; font-family: Inter, Helvetica, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: -0.9px; text-align: center;">
-      {{ Header }}
-    </h1>
-  {{/equals}}
+  {{/if}}
 
   <div style="margin-top: 48px; padding: 24px 12px; border: 1px solid #e3eaef; border-radius: 16px;">
     <table style="width: 100%; border-collapse: separate; margin-bottom: 18px; padding: 0 20px;">
@@ -119,19 +113,26 @@
     <!-- events -->
     <!-- NOTE: Sendgrid template preview does not seem to render the section below even if length is > 0 but that still works with real email -->
     {{#greaterThan (length TransactionEventContexts) 0}}
-      <table style="width: 100%; border-collapse: separate; padding: 0 20px; border-spacing: 0 8px;">
-        {{#each TransactionEventContexts}}
-          <tr style="background-color: #ffefef;">
-            <td style="margin-bottom: 8px; padding: 16px 0 16px 12px; width: 18px; border-radius: 10px 0 0 10px; line-height: 0; vertical-align: middle;">
-              <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
-                   style="height: 18px; width: 18px;" alt="Transaction event icon"/>
-            </td>
-            <td style="padding: 16px 24px 16px 16px; border-radius: 0 10px 10px 0; vertical-align: middle;">
-              <span style="color: #ed4145; font-size: 14px; line-height: 18px; font-family: Inter, Helvetica, sans-serif;">{{this}}</span>
-            </td>
-          </tr>
-        {{/each}}
-      </table>
+      <div style="padding: 0 20px;">
+        <table style="width:100%;border-collapse:collapse;">
+          {{#each TransactionEventContexts}}
+            <tr>
+              <td valign="middle" style="padding: 16px 12px; width:18px;border-radius: 10px 0 0 10px;background-color:#ffefef;line-height:1px;">
+                <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
+                     style="height:18px;width:18px;" alt=""/>
+              </td>
+              <td valign="middle" style="padding: 16px 24px 16px 0; border-radius: 0 10px 10px 0;background-color: #ffefef;">
+                <span style="color: #ed4145; font-size: 14px; line-height: 18px; font-family: Inter, Helvetica, sans-serif;">{{this}}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="height:8px; background-color:#fff;"></td>
+              <td style="height:8px; background-color:#fff;"></td>
+            </tr>
+          {{/each}}
+        </table>
+      </div>
     {{/greaterThan}}
 
     <!-- transaction details -->
@@ -190,34 +191,41 @@
       </tr>
     </table>
 
+    <table style="width:100%;">
+      <tr><td style="height:24px;"></td></tr>
+    </table>
+
     <!-- totals-->
-    <table style="width: 100%; border-collapse: separate; margin-top: 24px; padding: 18px 20px; border-radius: 16px; background-color: #f7f9fb;">
+    <table style="width:100%;border-collapse:separate;border-radius:16px;background-color:#f7f9fb;">
+      <tr>
+        <td colspan="3" style="height:16px;font-size:1px;color:#f7f9fb;">.</td>
+      </tr>
       {{#greaterThan PayerFee 0}}
         <tr>
-          <td valign="middle" style="width:22px;height:42px;text-align:center;">
+          <td valign="middle" style="padding:0 20px;width:22px;height:42px;text-align:center;">
             <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
                  style="height: 18px; width: 18px;" alt=""/>
           </td>
           <td style="height: 42px;vertical-align: middle;">
             <span style="color: #344054; font-size: 14px; font-weight: 600; font-family: Inter, Helvetica, sans-serif;">Sub Total</span>
           </td>
-          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ SubTotal }}</td>
+          <td style="padding:0 20px;color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ SubTotal }}</td>
         </tr>
         <tr>
-          <td valign="middle" style="width:22px;height:42px;text-align:center;">
+          <td valign="middle" style="padding:0 20px;width:22px;height:42px;text-align:center;">
             <img src="https://res.cloudinary.com/dhango/image/upload/v1711148190/EmailIcons/totals-payer-fee.png"
                  style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
           </td>
           <td style="height: 42px;">
             <span style="color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Payer Fee</span>
           </td>
-          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">
+          <td style="padding:0 20px;color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">
             {{ CurrencyPrefix }}{{ PayerFee }}
           </td>
         </tr>
       {{/greaterThan}}
       <tr>
-        <td valign="middle" style="width:22px;height:42px;text-align:center;">
+        <td valign="middle" style="padding:0 20px;width:22px;height:42px;text-align:center;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
                style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
         </td>
@@ -226,7 +234,10 @@
             Total
         </span>
         </td>
-        <td style="text-align: right; font-family: Inter, Helvetica, sans-serif; color: #101828; font-size: 30px; font-weight: 600; letter-spacing: -0.6px;">{{ CurrencyPrefix }}{{ Total }}</td>
+        <td style="padding:0 20px;text-align: right; font-family: Inter, Helvetica, sans-serif; color: #101828; font-size: 30px; font-weight: 600; letter-spacing: -0.6px;">{{ CurrencyPrefix }}{{ Total }}</td>
+      </tr>
+      <tr>
+        <td colspan="3" style="height:16px;"></td>
       </tr>
     </table>
   </div>
