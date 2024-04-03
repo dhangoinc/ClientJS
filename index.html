@@ -53,30 +53,41 @@
     </table>
 
     <!-- events -->
-    <table class="table table-events">
-      <tr class="transaction-event">
-        <td class="transaction-event-icon-cell">
-          <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
-               class="transaction-event-icon" alt="Transaction event icon"/>
-        </td>
-        <td class="transaction-event-message-cell">
-          <span class="transaction-event-text">
+    <div style="border-left:20px solid #fff;border-right: 20px solid #fff;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td valign="middle" style="padding: 16px 12px; width: 18px;border-radius: 10px 0 0 10px;background-color: #ffefef;">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
+                 style="height:18px;width:18px;line-height:0" alt=""/>
+          </td>
+          <td valign="middle" style="padding: 16px 24px 16px 0; border-radius: 0 10px 10px 0;background-color: #ffefef;">
+          <span style="color: #ed4145; font-size: 14px; line-height: 18px; font-family: Inter, Helvetica, sans-serif;">
             The customers account has insufficient funds to cover this payment.
           </span>
-        </td>
-      </tr>
-      <tr class="transaction-event">
-        <td class="transaction-event-icon-cell">
-          <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
-               class="transaction-event-icon" alt="Transaction event icon"/>
-        </td>
-        <td class="transaction-event-message-cell">
-          <span class="transaction-event-text">
+          </td>
+        </tr>
+        <tr>
+          <td style="height:8px; background-color:#fff;"></td>
+          <td style="height:8px; background-color:#fff;"></td>
+        </tr>
+
+        <tr>
+          <td valign="middle" style="padding: 16px 12px; width: 18px;border-radius: 10px 0 0 10px;background-color: #ffefef;">
+            <img src="https://res.cloudinary.com/dhango/image/upload/v1711113760/EmailIcons/alert-circle.png"
+                 style="height:18px;width:18px;line-height:0" alt=""/>
+          </td>
+          <td valign="middle" style="padding: 16px 24px 16px 0; border-radius: 0 10px 10px 0;background-color: #ffefef;">
+          <span style="color: #ed4145; font-size: 14px; line-height: 18px; font-family: Inter, Helvetica, sans-serif;">
             The customers account has insufficient funds to cover this payment.
           </span>
-        </td>
-      </tr>
-    </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="height:8px; background-color:#fff;"></td>
+          <td style="height:8px; background-color:#fff;"></td>
+        </tr>
+      </table>
+    </div>
 
     <!-- transaction details -->
     <table class="table transaction-details">
@@ -102,37 +113,55 @@
       </tr>
     </table>
 
+    <table style="width:100%;">
+      <tr><td style="height:24px;"></td></tr>
+    </table>
+
     <!-- totals-->
-    <table class="table table-transaction-totals">
+    <table style="width: 100%; border-collapse:collapse;border-radius: 16px; background-color: #f7f9fb;">
       <tr>
-        <td class="totals-key">
+        <td colspan="3" style="height:16px;font-size:1px;color:#f7f9fb;">.</td>
+      </tr>
+      <tr>
+        <td valign="middle" style="width:22px;height:42px;text-align:center;padding:0 20px;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
-               class="totals-key-icon" alt="Subtotal icon"/>
-          <span class="totals-key-text">Sub Total</span>
+               style="height: 18px; width: 18px;" alt=""/>
         </td>
-        <td class="totals-value">
-          <span class="totals-value">$586.70</span>
+        <td style="height: 42px;vertical-align: middle;">
+          <span style="color: #344054; font-size: 14px; font-weight: 600; font-family: Inter, Helvetica, sans-serif;">Sub Total</span>
         </td>
+        <td style="padding:0 20px; color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px;
+        text-align: right;
+        font-family: Inter, Helvetica, sans-serif;">$587.60</td>
       </tr>
       <tr>
-        <td class="totals-key">
+        <td valign="middle" style="width:22px;height:42px;text-align:center;padding:0 20px;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148190/EmailIcons/totals-payer-fee.png"
-               class="totals-key-icon" alt="Payer fee icon"/>
-          <span class="totals-key-text">Payer Fee</span>
+               style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
         </td>
-        <td class="totals-value">
-          <span class="totals-value">$17.80</span>
+        <td style="height: 42px;">
+          <span style="color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Payer Fee</span>
+        </td>
+        <td style="padding:0 20px; color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px;
+        text-align: right; font-family: Inter, Helvetica, sans-serif;">
+          $17.80
         </td>
       </tr>
       <tr>
-        <td class="totals-key">
+        <td valign="middle" style="width:22px;height:42px;text-align:center;padding:0 20px;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
-               class="totals-key-icon" alt="Total icon"/>
-          <span class="totals-key-text">Total</span>
+               style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
         </td>
-        <td class="totals-value">
-          <span class="totals-value strong">$604.50</span>
+        <td style="height: 42px;">
+          <span style="color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">
+            Total
+        </span>
         </td>
+        <td style="padding:0 20px;text-align: right; font-family: Inter, Helvetica, sans-serif; color: #101828; font-size: 30px;
+        font-weight: 600; letter-spacing: -0.6px;">$604.5</td>
+      </tr>
+      <tr>
+        <td colspan="3" style="height:16px;"></td>
       </tr>
     </table>
   </div>

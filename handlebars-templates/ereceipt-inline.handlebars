@@ -6,10 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Dhango</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+  </style>
 </head>
 
-<body style="background: whitesmoke; margin: 0; font-family: Inter, Helvetica, sans-serif;">
-<div style="padding: 60px 20px 200px;background-color: #fff;">
+<body style="background-color: #fff; margin: 0; font-family: Inter, Helvetica, sans-serif;">
+<div style="padding: 60px 20px 100px;background-color: #fff;">
   <div style="text-align: center;">
     {{#if LogoUri }}
       <img src="{{ LogoUri }}" alt="company-logo"/>
@@ -140,14 +144,16 @@
           {{ Payer }}
         </td>
       </tr>
-      <tr>
-        <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
-          <strong>Email Address</strong>
-        </td>
-        <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
-          {{ EmailAddress }}
-        </td>
-      </tr>
+      {{#if EmailAddress}}
+        <tr>
+          <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
+            <strong>Email Address</strong>
+          </td>
+          <td style="padding-left: 50px; width: 70%; color: #475467; font-size: 14px; font-weight: 400; font-family: Inter, Helvetica, sans-serif;">
+            {{ EmailAddress }}
+          </td>
+        </tr>
+      {{/if}}
       {{#each CustomFields}}
         <tr>
           <td style="padding-top: 7px; padding-bottom: 7px; width: 30%; color: #344054; font-size: 14px; font-weight: 500; font-family: Inter, Helvetica, sans-serif;">
@@ -188,27 +194,37 @@
     <table style="width: 100%; border-collapse: separate; margin-top: 24px; padding: 18px 20px; border-radius: 16px; background-color: #f7f9fb;">
       {{#greaterThan PayerFee 0}}
         <tr>
-          <td style="height: 42px;">
+          <td valign="middle" style="width:22px;height:42px;text-align:center;">
             <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
-                 style="height: 18px; width: 18px; vertical-align: middle;" alt="Subtotal icon"/>
-            <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Sub Total</span>
+                 style="height: 18px; width: 18px;" alt=""/>
+          </td>
+          <td style="height: 42px;vertical-align: middle;">
+            <span style="color: #344054; font-size: 14px; font-weight: 600; font-family: Inter, Helvetica, sans-serif;">Sub Total</span>
           </td>
           <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ SubTotal }}</td>
         </tr>
         <tr>
-          <td style="height: 42px;">
+          <td valign="middle" style="width:22px;height:42px;text-align:center;">
             <img src="https://res.cloudinary.com/dhango/image/upload/v1711148190/EmailIcons/totals-payer-fee.png"
-                 style="height: 18px; width: 18px; vertical-align: middle;" alt="Payer fee icon"/>
-            <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Payer Fee</span>
+                 style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
           </td>
-          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">{{ CurrencyPrefix }}{{ PayerFee }}</td>
+          <td style="height: 42px;">
+            <span style="color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Payer Fee</span>
+          </td>
+          <td style="color: #8a93a6; font-size: 16px; font-weight: 500; letter-spacing: -0.32px; text-align: right; font-family: Inter, Helvetica, sans-serif;">
+            {{ CurrencyPrefix }}{{ PayerFee }}
+          </td>
         </tr>
       {{/greaterThan}}
       <tr>
-        <td style="height: 42px;">
+        <td valign="middle" style="width:22px;height:42px;text-align:center;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
-               style="height: 18px; width: 18px; vertical-align: middle;" alt="Total icon"/>
-          <span style="margin-left: 10px; color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">Total</span>
+               style="height: 18px; width: 18px; vertical-align: middle;" alt=""/>
+        </td>
+        <td style="height: 42px;">
+          <span style="color: #344054; font-size: 14px; font-weight: 600; vertical-align: middle; font-family: Inter, Helvetica, sans-serif;">
+            Total
+        </span>
         </td>
         <td style="text-align: right; font-family: Inter, Helvetica, sans-serif; color: #101828; font-size: 30px; font-weight: 600; letter-spacing: -0.6px;">{{ CurrencyPrefix }}{{ Total }}</td>
       </tr>
@@ -221,12 +237,15 @@
 </div>
 
 <footer style="margin: 0; padding: 24px 24px 55px; background-color: #083a4a; text-align: center;">
-  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">&#169; {{ Copyright }}</p>
+  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
+    &#169; {{ Copyright }}
+  </p>
   <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
     If you have any questions please contact us at <a href="mailto:{{ContactEmail}}">{{ ContactEmail }}</a>
   </p>
-  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">{{ Address }}</p>
-  <a href="{{ UnsubacribeURL }}" style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">Unsubscribe</a>
+  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
+    {{ Address }}
+  </p>
 </footer>
 </body>
 </html>
