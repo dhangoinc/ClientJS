@@ -12,7 +12,7 @@
   </style>
 </head>
 
-<body style="background-color: #fff; margin: 0; font-family: Inter, Helvetica, sans-serif;">
+<body style="background-color:#fff;font-family: Inter, Helvetica, sans-serif;">
 <div style="padding: 60px 20px 100px;background-color: #fff;">
   <div style="text-align: center;">
     {{#if LogoUri }}
@@ -29,7 +29,7 @@
     </h1>
   {{/if}}
 
-  <div style="margin-top: 48px; padding: 24px 12px; border: 1px solid #e3eaef; border-radius: 16px;">
+  <div style="margin-top:48px;padding: 24px 12px; border:1px solid #e3eaef;border-radius:16px;box-sizing:border-box;">
     <table style="width: 100%; border-collapse: separate; margin-bottom: 18px; padding: 0 20px;">
       <tr>
         <td style="width: 36px;">
@@ -200,7 +200,7 @@
       <tr>
         <td colspan="3" style="height:16px;font-size:1px;color:#f7f9fb;">.</td>
       </tr>
-      {{#greaterThan PayerFee 0}}
+      {{#if PayerFee}}
         <tr>
           <td valign="middle" style="padding:0 20px;width:22px;height:42px;text-align:center;">
             <img src="https://res.cloudinary.com/dhango/image/upload/v1711148244/EmailIcons/totals-sub-total.png"
@@ -223,7 +223,7 @@
             {{ CurrencyPrefix }}{{ PayerFee }}
           </td>
         </tr>
-      {{/greaterThan}}
+      {{/if}}
       <tr>
         <td valign="middle" style="padding:0 20px;width:22px;height:42px;text-align:center;">
           <img src="https://res.cloudinary.com/dhango/image/upload/v1711148270/EmailIcons/totals-total.png"
@@ -247,16 +247,27 @@
   </p>
 </div>
 
-<footer style="margin: 0; padding: 24px 24px 55px; background-color: #083a4a; text-align: center;">
-  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
-    &#169; {{ Copyright }}
-  </p>
-  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
-    If you have any questions please contact us at <a href="mailto:{{ContactEmail}}">{{ ContactEmail }}</a>
-  </p>
-  <p style="margin: 0; padding: 4px 0; color: #fff; font-size: 15px; font-weight: 400; line-height: 20px; text-align: center;">
-    {{ Address }}
-  </p>
-</footer>
+<table style="width:100%;">
+  <tr><td style="height:80px;"></td></tr>
+</table>
+
+<table style="width:100%;background-color:#083a4a;text-align:center;border-collapse:collapse;">
+  <tr>
+    <td style="padding:24px 4px 4px;color:#fff;font-size:15px;font-weight:400;line-height:20px;text-align:center;">
+      &#169; {{ Copyright }}
+    </td>
+  </tr>
+  <tr style="padding:4px 0;color:#fff;font-size:15px;font-weight:400;line-height:20px;text-align:center;">
+    <td>
+      If you have any questions please contact us at <a style="color:#fff;" href="mailto:{{ContactEmail}}">{{ContactEmail}}</a>
+    </td>
+  </tr>
+  <tr style="padding:4px 0;color:#fff;font-size:15px;font-weight:400;line-height:20px;text-align:center;">
+    <td>{{ Address }}</td>
+  </tr>
+  <tr>
+    <td style="height:24px;font-size:1px;color:#083a4a">.</td>
+  </tr>
+</table>
 </body>
 </html>
