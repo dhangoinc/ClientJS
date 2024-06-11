@@ -1,0 +1,227 @@
+﻿html {
+  --dh-label-padding-top: 10px;
+  --dh-primary-black: #212529;
+}
+
+/* Payment Method container */
+.payment-method-container {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid gray;
+}
+
+.payment-method-container.payment-method-container-active {
+  border-color: #545af2;
+}
+
+/* End: Payment Method container */
+
+/* Payment Method selection radio button */
+.radio-container {
+  height: 28px;
+  padding: 0;
+}
+
+.radio-input {
+  margin: 0;
+  height: 16px;
+  width: 16px;
+}
+
+.radio-label,
+.radio-input,
+.radio-label-text,
+.radio-label-icon {
+  vertical-align: middle;
+}
+
+.radio-label {
+  margin-left: 6px;
+}
+
+.radio-label-icon {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 24px;
+  background-color: #000;
+}
+
+.radio-label-icon-card {
+  mask-image: url('/icons/card.svg');
+}
+
+.radio-label-icon-ach {
+  mask-image: url('/icons/bank.svg');
+}
+
+.radio-label-text {
+  margin-left: 6px;
+}
+
+/* End: Payment Method selection radio button */
+
+input[name="bankAccountType"] {
+  display: none;
+}
+
+#ACH > span:first-of-type {
+  display: flex;
+  column-gap: 10px;
+  margin-top: 10px;
+}
+
+#ACH > span > label {
+  padding: 5px 10px;
+  background: #EDEFFE;
+  color: #8F8CE3;
+  border-radius: 8px;
+  font-size: 12px;
+  font-size: 12.5px;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+#ACH > span > input:checked + label, #ACH > span > label:active, #ACH > span > label:hover {
+  color: #fff;
+  background: #545af2;
+}
+
+.input-label-container {
+  padding: 10px 0px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.error-label-container {
+  color: #f25f6f;
+  float: right;
+  margin: 5px 0 0;
+  text-align: right;
+  font-size: 10px;
+}
+
+.error-label-container label {
+  font-size: 11px;
+}
+
+#dhangoContainer {
+  max-width: 600px;
+  background: #fff;
+  margin: 0 auto;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.form-input-element {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+input {
+  height: 40px;
+  width: 100%;
+  background: #f6f6f6;
+  border: 1px solid #F4F3F8;
+  border-radius: 8px;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+.invalid-input {
+  border-color: #f25f6f;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+#dhangoContainer label {
+  display: inline;
+}
+
+#cardVerificationContainer, #cardNumberContainer, #bankAccountHolderContainer, #bankAccountNumberContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 15px;
+}
+
+::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder {
+  color: #c1c1c1;
+}
+
+.activeTab {
+  border-bottom: 3px solid #545af2;
+}
+
+@media (max-width: 640px) {
+  #ACH > span:first-of-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+  }
+
+  #ACH > span > label {
+    text-align: center;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#cardAccountNumber-container .input-field {
+  position: relative;
+}
+
+#cardAccountNumber-container .input-field::after {
+  background-image: url('/icons/empty-card.svg');
+  background-repeat: no-repeat;
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-size: 100%, 100%;
+}
+
+#cardAccountNumber-container.visa .input-field::after {
+  background-image: url('/icons/visa.svg');
+}
+
+#cardAccountNumber-container.mastercard .input-field::after {
+  background-image: url('/icons/mastercard.svg');
+}
+
+#cardAccountNumber-container.discover .input-field::after {
+  background-image: url('/icons/discover.svg');
+}
+
+#cardAccountNumber-container.americanexpress .input-field::after {
+  background-image: url('/icons/americanexpress.svg');
+}
+
+#cardAccountNumber-container.jcb .input-field::after {
+  background-image: url('/icons/jcb.svg');
+}
+
+@media (max-width: 850px) {
+  #cardAccountNumber-container .input-field::after {
+    background-image: none;
+  }
+}
