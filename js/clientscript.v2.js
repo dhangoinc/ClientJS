@@ -10,6 +10,10 @@ class dhangoPaymentMethod {
   static get ACH() {
     return "ACH";
   }
+
+  static get ACSS() {
+    return 'ACSS';
+  }
 }
 
 const dhango = class {
@@ -39,16 +43,16 @@ const dhango = class {
   }
 
   get isValid() {
-    var validInput = false;
-    var paymentMethod = this.#paymentMethod;
+    let validInput = false;
+    const paymentMethod = this.#paymentMethod;
 
     this.#fieldSets.forEach(function(fieldSet) {
-      if (fieldSet.id == paymentMethod) {
+      if (fieldSet.id === paymentMethod) {
         // This is now the active field set. The input is valid until we find otherwise.
         validInput = true;
 
-        for (var input of fieldSet.getElementsByTagName("label")) {
-          if (input.id.endsWith('-error-label') && input.style.display == '') {
+        for (const input of fieldSet.getElementsByTagName('label')) {
+          if (input.id.endsWith('-error-label') && input.style.display === '') {
             validInput = false;
           }
         }
@@ -85,6 +89,20 @@ const dhango = class {
       accountNumber: document.getElementById('bankAccountNumber').value,
       bankAccountType: document.querySelector('input[name="bankAccountType"]:checked').value
     };
+  }
+
+  get acss() {
+    if (this.#paymentMethod !== dhangoPaymentMethod.ACSS) {
+      return null;
+    }
+
+    return {
+      accountHolder: this.getFieldValue('acssAccountHolder'),
+      institutionNumber: this.getFieldValue('acssInstitutionNumber'),
+      transitNumber: this.getFieldValue('acssTransitNumber'),
+      accountNumber: this.getFieldValue('acssAccountNumber'),
+      bankAccountType: document.querySelector('input[name="acssBankAccountType"]:checked').value
+    }
   }
 
   get address() {
@@ -182,13 +200,39 @@ const dhango = class {
     return container;
   }
 
-  displayTokenForm(elementId) {
+  async displayTokenForm(elementId) {
     const formFieldsRowCssClass = 'form-fields-row';
-    const dhangoContainer = document.createElement("div");
-    dhangoContainer.id = "dhangoContainer";
+    const dhangoContainer = document.createElement('div');
+    dhangoContainer.id = 'dhangoContainer';
     document.getElementById(elementId).appendChild(dhangoContainer);
 
-    if (this.supportedPaymentMethods.includes(dhangoPaymentMethod.Card)) {
+    // Loading indicator
+    const loadingIndicatorEl = this.buildLoadingIndicator();
+    dhangoContainer.appendChild(loadingIndicatorEl);
+
+    const apiEnabledPaymentMethods = await this.getSupportedPaymentMethods();
+    dhangoContainer.removeChild(loadingIndicatorEl);
+
+    // Load payment methods error
+    if (!apiEnabledPaymentMethods) {
+      dhangoContainer.appendChild(this.buildErrorMessage('errorGetPaymentMethods'));
+      document.getElementById('submit').disabled = true;
+
+      return;
+    }
+
+    // No payment methods available error
+    if (!apiEnabledPaymentMethods.length) {
+      dhangoContainer.appendChild(this.buildErrorMessage('errorNoPaymentMethods'));
+      document.getElementById('submit').disabled = true;
+
+      return;
+    }
+
+    const supportedPaymentMethods = apiEnabledPaymentMethods
+      .filter(paymentMethod => this.supportedPaymentMethods.includes(paymentMethod));
+
+    if (supportedPaymentMethods.includes(dhangoPaymentMethod.Card)) {
       const cardFieldSet = document.createElement("fieldset");
 
       cardFieldSet.setAttribute("id", dhangoPaymentMethod.Card);
@@ -254,20 +298,16 @@ const dhango = class {
       this.#fieldSets.push(cardFieldSet);
     }
 
-    if (this.supportedPaymentMethods.includes(dhangoPaymentMethod.ACH)) {
-      const achFieldSet = document.createElement("fieldset");
+    if (supportedPaymentMethods.includes(dhangoPaymentMethod.ACH)) {
+      const achFieldSet = document.createElement('fieldset');
 
-      achFieldSet.setAttribute("id", dhangoPaymentMethod.ACH);
-      achFieldSet.style.display = "none";
+      achFieldSet.setAttribute('id', dhangoPaymentMethod.ACH);
+      achFieldSet.style.display = 'none';
 
-      const bankAccountTypeSection = document.createElement("span");
-
-      this.addSelectionOption(bankAccountTypeSection, "CorporateChecking", this.#localization.getTranslation("corporateChecking"), "bankAccountType", true);
-      this.addSelectionOption(bankAccountTypeSection, "CorporateSavings", this.#localization.getTranslation("corporateSavings"), "bankAccountType", false);
-      this.addSelectionOption(bankAccountTypeSection, "PersonalChecking", this.#localization.getTranslation("personalChecking"), "bankAccountType", false);
-      this.addSelectionOption(bankAccountTypeSection, "PersonalSavings", this.#localization.getTranslation("personalSavings"), "bankAccountType", false);
-
-      achFieldSet.appendChild(bankAccountTypeSection);
+      // Bank Account Type selection
+      achFieldSet.appendChild(this.buildBankAccountTypeSection(
+        ['CorporateChecking', 'CorporateSavings', 'PersonalChecking', 'PersonalSavings'], 'bankAccountType'
+      ));
 
       let inputContainer = document.createElement("div");
       inputContainer.id = "bankAccountHolderContainer";
@@ -317,11 +357,23 @@ const dhango = class {
       this.#fieldSets.push(achFieldSet);
     }
 
+    // ACSS
+    if (supportedPaymentMethods.includes(dhangoPaymentMethod.ACSS)) {
+      const acssFieldSet = this.buildAcssForm(formFieldsRowCssClass, dhangoContainer);
+      const paymentMethodFormContainer = this.createSelectablePaymentMethodFormContainer({
+        paymentMethod: dhangoPaymentMethod.ACSS,
+        radioIcon: 'radio-label-icon-ach',
+        fieldSet: acssFieldSet
+      });
+
+      dhangoContainer.appendChild(paymentMethodFormContainer);
+      this.#fieldSets.push(acssFieldSet);
+    }
+
     if (this.#fieldSets.length > 0) {
       this.#paymentMethod = this.#fieldSets[0].id;
       dhangoContainer.querySelector(`input[type='radio'][value=${this.#paymentMethod}]`).checked = true;
       this.setPaymentMethod(this.#paymentMethod);
-
 
       if (this.#fieldSets[0].form != null) {
         this.#fieldSets[0].form.addEventListener('submit', this.validate);
@@ -374,18 +426,21 @@ const dhango = class {
   }
 
   validate(target) {
-    var activeFieldSet = null;
-    var cardFieldSet = document.getElementById(dhangoPaymentMethod.Card);
-    var achFieldSet = document.getElementById(dhangoPaymentMethod.ACH);
+    let activeFieldSet = null;
+    const cardFieldSet = document.getElementById(dhangoPaymentMethod.Card);
+    const achFieldSet = document.getElementById(dhangoPaymentMethod.ACH);
+    const acssFieldSet = document.getElementById(dhangoPaymentMethod.ACSS);
 
     if (cardFieldSet != null && cardFieldSet.style.display == '') {
       activeFieldSet = cardFieldSet;
     } else if (achFieldSet != null && achFieldSet.style.display == '') {
       activeFieldSet = achFieldSet;
+    } else if (acssFieldSet !== null && acssFieldSet.style.display == '') {
+      activeFieldSet = acssFieldSet;
     }
 
     if (activeFieldSet != null) {
-      for (var input of activeFieldSet.getElementsByTagName("input")) {
+      for (const input of activeFieldSet.getElementsByTagName('input')) {
         input.dispatchEvent(new Event('blur', { bubbles: false }));
       }
     }
@@ -578,7 +633,10 @@ const dhango = class {
     if (typeof options !== 'undefined') {
       if (options.numbersOnly == true) {
         input.setAttribute("type", "number");
-        input.setAttribute("oninput", "this.value = this.value.slice(0, this.maxLength)");
+
+        if (options.maximumLength) {
+          input.setAttribute("oninput", "this.value = this.value.slice(0, this.maxLength)");
+        }
 
         input.addEventListener('keydown', function(e) {
           if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -636,19 +694,25 @@ const dhango = class {
     return formElement;
   }
 
-  addSelectionOption(section, value, text, groupName, selected) {
-    var option = document.createElement("input");
-    option.type = "radio";
-    option.id = value + "id";
+  addSelectionOption(section, value, text, groupName, selected, idPrefix) {
+    const option = document.createElement('input');
+    // id prefix is used to avoid having multiple radios with the same id across different forms.
+    // We cannot simply change the id naming strategy due to backwards compatibility (e.g. there could be css styles
+    // (re-)defined for a given in)
+    const id = `${idPrefix ? idPrefix + '-' : ''}${value}id`;
+
+    option.type = 'radio';
+    option.id = id;
     option.name = groupName;
     option.value = value;
+    option.setAttribute('class', `radio-${groupName}`);
 
     if (selected) {
       option.checked = true;
     }
 
-    var label = document.createElement("label");
-    label.setAttribute("for", value + "id");
+    const label = document.createElement('label');
+    label.setAttribute('for', id);
     label.textContent = text;
 
     section.appendChild(option);
@@ -698,9 +762,10 @@ const dhango = class {
 
   async saveToken(postTokenHandler, postTokenErrorHandler) {
     if (this.isValid) {
-      var postTokenRequest = {
+      const postTokenRequest = {
         card: this.card,
         ach: this.ach,
+        acss: this.acss,
         address: this.address
       };
 
@@ -743,41 +808,200 @@ const dhango = class {
   }
 
   async createToken(postTokenRequest, postTokenHandler, postTokenErrorHandler) {
-    var response = await fetch(this.baseUrl + '/tokens', {
-      method: "POST",
+    const response = await fetch(this.baseUrl + '/tokens', {
+      method: 'POST',
       body: JSON.stringify(postTokenRequest),
       headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        "accountKey": this.paymentMethodAccountKey,
-        "culture": this.#culture
+        'Content-type': 'application/json; charset=UTF-8',
+        'accountKey': this.paymentMethodAccountKey,
+        'culture': this.#culture
       }
     });
+    const result = await response.json();
 
-    var result = await response.json();
-
-    if (response.status == 201) {
+    if (response.status === 201) {
       postTokenHandler(result);
     } else {
       for (let fieldName in result.errors) {
-        if (fieldName == 'Card.CardHolder') {
-          this.setInputError('cardAccountHolder', result.errors[fieldName][0]);
-        } else if (fieldName == 'Card.CardNumber') {
-          this.setInputError('cardAccountNumber', result.errors[fieldName][0]);
-        } else if (fieldName == 'Card.ExpirationMonth') {
-          this.setInputError('cardExpiration', result.errors[fieldName][0]);
-        } else if (fieldName == 'Card.ExpirationYear') {
-          this.setInputError('cardExpiration', result.errors[fieldName][0]);
-        } else if (fieldName == 'Card.PostalCode') {
-          this.setInputError('postalCode', result.errors[fieldName][0]);
-        } else if (fieldName == 'Ach.RoutingNumber') {
-          this.setInputError('routingNumber', result.errors[fieldName][0]);
-        } else if (fieldName == 'Ach.AccountNumber') {
-          this.setInputError('bankAccountNumber', result.errors[fieldName][0]);
+        const [fieldError] = result.errors[fieldName];
+
+        if (fieldName === 'Card.CardHolder') {
+          this.setInputError('cardAccountHolder', fieldError);
+        } else if (fieldName === 'Card.CardNumber') {
+          this.setInputError('cardAccountNumber', fieldError);
+        } else if (fieldName === 'Card.ExpirationMonth') {
+          this.setInputError('cardExpiration', fieldError);
+        } else if (fieldName === 'Card.ExpirationYear') {
+          this.setInputError('cardExpiration', fieldError);
+        } else if (fieldName === 'Card.PostalCode') {
+          this.setInputError('postalCode', fieldError);
+        } else if (fieldName === 'Ach.RoutingNumber') {
+          this.setInputError('routingNumber', fieldError);
+        } else if (fieldName === 'Ach.AccountNumber') {
+          this.setInputError('bankAccountNumber', fieldError);
+        } else if (fieldName === 'Acss.AccountHolder') {
+          this.setInputError('acssAccountHolder', fieldError);
+        } else if (fieldName === 'Acss.InstitutionNumber') {
+          this.setInputError('acssInstitutionNumber', fieldError);
+        } else if (fieldName === 'Acss.TransitNumber') {
+          this.setInputError('acssTransitNumber', fieldError);
+        } else if (fieldName === 'Acss.AccountNumber') {
+          this.setInputError('acssAccountNumber', fieldError);
         }
       }
 
       postTokenErrorHandler(result.errors);
     }
+  }
+
+  async getSupportedPaymentMethods() {
+    const response = await fetch(`${this.baseUrl}/accounts/${this.paymentMethodAccountKey}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        'AccountKey': this.paymentMethodAccountKey,
+        'culture': this.#culture
+      }
+    });
+
+    const result = await response.json().catch(() => ({ status: 500 }));
+
+    return response.status === 200 ? result.supportedPaymentMethods : null;
+  }
+
+  getFieldValue(fieldId) {
+    return document.getElementById(fieldId).value;
+  }
+
+  createSelectablePaymentMethodFormContainer(data) {
+    const { paymentMethod, radioIcon, fieldSet } = data;
+
+    const radioButton = this.createRadio({
+      name: 'paymentMethod',
+      value: paymentMethod,
+      label: this.#localization.getTranslation(paymentMethod),
+      iconCssClass: radioIcon ?? ''
+    });
+    const paymentMethodFormContainer = this.createPaymentMethodFormContainer(
+      radioButton, dhangoPaymentMethod.ACSS, [`payment-method-${paymentMethod}`]
+    );
+
+    paymentMethodFormContainer.getElementsByClassName('fieldset')[0].appendChild(fieldSet);
+
+    return paymentMethodFormContainer;
+  }
+
+  buildAcssForm(formFieldsRowCssClass) {
+    const fieldSet = document.createElement('fieldset');
+
+    fieldSet.setAttribute('id', dhangoPaymentMethod.ACSS);
+    fieldSet.style.display = 'none';
+
+    // Bank Account Type selection
+    fieldSet.appendChild(this.buildBankAccountTypeSection([
+      { value: 'PersonalChecking', label: 'Personal' },
+      { value: 'CorporateChecking', label: 'Corporate' }
+    ], 'acssBankAccountType', 'acss'));
+
+    // Account Holder & Institution Number
+    const formRow1 = document.createElement('div');
+    formRow1.id = 'acss-form-row-1';
+    formRow1.setAttribute('class', formFieldsRowCssClass);
+
+    // Account Holder
+    formRow1.appendChild(
+      this.createFormElement('acssAccountHolder', this.#localization.getTranslation('acssAccountHolder'), {
+        placeholder: this.#localization.getTranslation('firstAndLastName')
+      })
+    );
+
+    // Institution Number
+    formRow1.appendChild(
+      this.createFormElement('acssInstitutionNumber', this.#localization.getTranslation('acssInstitutionNumber'), {
+        placeholder: '123',
+        numbersOnly: true,
+        minimumLength: 3,
+        maximumLength: 3,
+      })
+    );
+
+    fieldSet.appendChild(formRow1);
+
+    // Transit Number & Account Number fields
+    const formRow2 = document.createElement('div');
+    formRow2.id = 'acss-form-row-2';
+    formRow2.setAttribute('class', formFieldsRowCssClass);
+
+    // Transit Number
+    formRow2.appendChild(
+      this.createFormElement('acssTransitNumber', this.#localization.getTranslation('acssTransitNumber'), {
+        numbersOnly: true,
+        minimumLength: 1,
+        maximumLength: 5,
+        placeholder: '12345',
+      })
+    );
+
+    // Account Number
+    formRow2.appendChild(
+      this.createFormElement('acssAccountNumber', this.#localization.getTranslation('acssAccountNumber'), {
+        numbersOnly: true,
+        placeholder: '123456',
+      })
+    );
+
+    fieldSet.appendChild(formRow2);
+
+    return fieldSet;
+  }
+
+  buildBankAccountTypeSection(bankAccountTypes, groupName, idPrefix) {
+    const bankAccountTypeSectionEl = document.createElement('span');
+
+    bankAccountTypes.forEach((bankAccountType, index) => {
+      const bankAccountTypeValue = typeof bankAccountType === 'object' ? bankAccountType.value : bankAccountType;
+      const bankAccountTypeLabel = typeof bankAccountType === 'object' ? bankAccountType.label : bankAccountType;
+
+      this.addSelectionOption(bankAccountTypeSectionEl, bankAccountTypeValue,
+        this.#localization.getTranslation(this.lowercaseFirst(bankAccountTypeLabel)), groupName, index === 0, idPrefix);
+    });
+
+    return bankAccountTypeSectionEl;
+  }
+
+  buildLoadingIndicator() {
+    const loader = document.createElement('span');
+    loader.setAttribute('class', 'loader');
+
+    const text = document.createElement('span');
+    text.setAttribute('class', 'loader-text');
+    text.appendChild(document.createTextNode(this.#localization.getTranslation('loadingPaymentMethods')));
+
+    const loaderContainer = document.createElement('div');
+    loaderContainer.setAttribute('class', 'loader-container');
+
+    loaderContainer.appendChild(loader);
+    loaderContainer.appendChild(text);
+
+    return loaderContainer;
+  }
+
+  buildErrorMessage(error) {
+    const text = document.createElement('span');
+    text.appendChild(document.createTextNode(this.#localization.getTranslation(error)));
+
+    const errorContainer = document.createElement('div');
+    errorContainer.setAttribute('class', 'error-container');
+
+    errorContainer.appendChild(text);
+
+    return errorContainer;
+  }
+
+  lowercaseFirst(s) {
+    const value = s?.trim();
+
+    return value ? value.charAt(0).toLocaleLowerCase() + value.substring(1) : '';
   }
 };
 
@@ -815,7 +1039,17 @@ const localization = class {
       "isRequired": " is required.",
       "bankAccountNumbersMustMatch": "The bank account numbers must match.",
       "invalidExpiration": "The expiration date is invalid.",
-      "firstAndLastName": "First and Last Name"
+      "firstAndLastName": "First and Last Name",
+      "ACSS": "ACSS",
+      "acssAccountHolder": "Account Holder",
+      "acssAccountNumber": "Account Number",
+      "acssInstitutionNumber": "Institution Number",
+      "acssTransitNumber": "Transit Number",
+      "personal": "Personal",
+      "corporate": "Corporate",
+      "loadingPaymentMethods": 'Loading available payment methods...',
+      "errorGetPaymentMethods": "Failed to load available payment methods",
+      "errorNoPaymentMethods": "No payment methods configured for an account"
     },
     "es": {}
   };

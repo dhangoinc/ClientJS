@@ -63,34 +63,45 @@
 
 /* End: Payment Method selection radio button */
 
-input[name="bankAccountType"] {
+input[name="bankAccountType"],
+.radio-acssBankAccountType {
   display: none;
 }
 
-#ACH > span:first-of-type {
+#ACH > span:first-of-type,
+#ACSS > span:first-of-type {
   display: flex;
   column-gap: 10px;
   margin-top: 10px;
 }
 
-#ACH > span > label {
+#ACH > span > label,
+#ACSS > span > label {
   padding: 5px 10px;
   background: #EDEFFE;
   color: #8F8CE3;
   border-radius: 8px;
-  font-size: 12px;
   font-size: 12.5px;
   flex-grow: 1;
   cursor: pointer;
 }
 
-#ACH > span > input:checked + label, #ACH > span > label:active, #ACH > span > label:hover {
+#ACH > span > input:checked + label,
+#ACH > span > label:active,
+#ACH > span > label:hover,
+#ACSS > span > input:checked + label,
+#ACSS > span > label:active,
+#ACSS > span > label:hover {
   color: #fff;
   background: #545af2;
 }
 
+#ACSS label {
+  text-align: center;
+}
+
 .input-label-container {
-  padding: 10px 0px;
+  padding: 10px 0;
   font-weight: 700;
   font-size: 14px;
 }
@@ -145,7 +156,12 @@ fieldset {
   display: inline;
 }
 
-#cardVerificationContainer, #cardNumberContainer, #bankAccountHolderContainer, #bankAccountNumberContainer {
+#cardVerificationContainer,
+#cardNumberContainer,
+#bankAccountHolderContainer,
+#bankAccountNumberContainer,
+#acss-form-row-1,
+#acss-form-row-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 15px;
@@ -223,5 +239,48 @@ input[type=number] {
 @media (max-width: 850px) {
   #cardAccountNumber-container .input-field::after {
     background-image: none;
+  }
+}
+
+.error-container {
+  padding: 8px;
+
+  color: #f25f6f;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.loader-container {
+  padding: 16px 8px;
+  text-align: center;
+}
+
+.loader-text {
+  margin-left: 8px;
+  color: #adadad;
+  font-size: 12px;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #adadad;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

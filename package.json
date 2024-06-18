@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npm run lite",
+    "start": "npm run lite -- --config config/bs-config.js",
     "lite": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "http-proxy-middleware": "^3.0.0",
     "lite-server": "^2.6.1"
   }
 }
