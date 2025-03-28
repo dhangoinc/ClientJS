@@ -15,8 +15,8 @@ class dhangoPaymentMethod {
         return 'ACSS';
     }
 
-    static get AUDirectDebit() {
-        return 'AUDirectDebit';
+    static get BECS() {
+        return 'BECS';
     }
 }
 
@@ -110,15 +110,15 @@ const dhango = class {
         }
     }
 
-    get auDirectDebit() {
-        if (this.#paymentMethod !== dhangoPaymentMethod.AUDirectDebit) {
+    get becs() {
+        if (this.#paymentMethod !== dhangoPaymentMethod.BECS) {
             return null;
         }
 
         return {
-            bankAccountHolder: this.getFieldValue('auDirectDebitAccountHolder'),
-            bsb: this.getFieldValue('auDirectDebitBSB'),
-            accountNumber: this.getFieldValue('auDirectDebitAccountNumber'),
+            bankAccountHolder: this.getFieldValue('BECSAccountHolder'),
+            bsb: this.getFieldValue('BECS_BSB'),
+            accountNumber: this.getFieldValue('BECSAccountNumber'),
         }
     }
 
@@ -386,18 +386,18 @@ const dhango = class {
             this.#fieldSets.push(acssFieldSet);
         }
 
-        // AU Direct Debit
-        if (apiEnabledPaymentMethods.includes(dhangoPaymentMethod.AUDirectDebit)) {
-            const auDirectDebitFieldSet = this.buildAUDirectDebitForm(formFieldsRowCssClass);
+        // AU BECS
+        if (apiEnabledPaymentMethods.includes(dhangoPaymentMethod.BECS)) {
+            const BECSFieldSet = this.buildBECSForm(formFieldsRowCssClass);
             const paymentMethodFormContainer = this.createSelectablePaymentMethodFormContainer({
-                paymentMethod: dhangoPaymentMethod.AUDirectDebit,
-                fieldSet: auDirectDebitFieldSet
+                paymentMethod: dhangoPaymentMethod.BECS,
+                fieldSet: BECSFieldSet
             });
 
             dhangoContainer.appendChild(paymentMethodFormContainer);
-            this.#fieldSets.push(auDirectDebitFieldSet);
+            this.#fieldSets.push(BECSFieldSet);
 
-            const bsbInputEl = document.getElementById('auDirectDebitBSB');
+            const bsbInputEl = document.getElementById('BECS_BSB');
             if (bsbInputEl) {
                 bsbInputEl.addEventListener('blur', () => {
                     this.validateBSB(bsbInputEl, this);
@@ -465,7 +465,7 @@ const dhango = class {
         const cardFieldSet = document.getElementById(dhangoPaymentMethod.Card);
         const achFieldSet = document.getElementById(dhangoPaymentMethod.ACH);
         const acssFieldSet = document.getElementById(dhangoPaymentMethod.ACSS);
-        const auDirectDebitFieldSet = document.getElementById(dhangoPaymentMethod.AUDirectDebit);
+        const BECSFieldSet = document.getElementById(dhangoPaymentMethod.BECS);
 
         if (cardFieldSet != null && cardFieldSet.style.display == '') {
             activeFieldSet = cardFieldSet;
@@ -473,8 +473,8 @@ const dhango = class {
             activeFieldSet = achFieldSet;
         } else if (acssFieldSet !== null && acssFieldSet.style.display == '') {
             activeFieldSet = acssFieldSet;
-        } else if (auDirectDebitFieldSet !== null && auDirectDebitFieldSet.style.display == '') {
-            activeFieldSet = auDirectDebitFieldSet;
+        } else if (BECSFieldSet !== null && BECSFieldSet.style.display == '') {
+            activeFieldSet = BECSFieldSet;
         }
 
         if (activeFieldSet != null) {
@@ -646,7 +646,7 @@ const dhango = class {
     }
 
     validateBSB(input, d) {
-        const errorLabel = document.getElementById('auDirectDebitBSB-error-label');
+        const errorLabel = document.getElementById('BECS_BSB-error-label');
 
         if (/^\d{3}-\d{3}$/.test(input.value)) {
             errorLabel.style.display = 'none';
@@ -655,7 +655,7 @@ const dhango = class {
             return;
         }
 
-        errorLabel.textContent = d.#localization.getTranslation("auDirectDebitBSBFormat");
+        errorLabel.textContent = d.#localization.getTranslation("BECS_BSBFormat");
         errorLabel.style.display = '';
         errorLabel.classList.add('invalid-input');
         input.classList.add('invalid-input');
@@ -824,7 +824,7 @@ const dhango = class {
                 card: this.card,
                 ach: this.ach,
                 acss: this.acss,
-                auDirectDebit: this.auDirectDebit,
+                becs: this.becs,
                 address: this.address,
                 validateAccount: this.validateAccount
             };
@@ -907,12 +907,12 @@ const dhango = class {
                     this.setInputError('acssTransitNumber', fieldError);
                 } else if (fieldName === 'Acss.AccountNumber') {
                     this.setInputError('acssAccountNumber', fieldError);
-                } else if (fieldName === 'AuDirectDebit.BankAccountHolder') {
-                    this.setInputError('auDirectDebitAccountHolder', fieldError);
-                } else if (fieldName === 'AuDirectDebit.AccountNumber') {
-                    this.setInputError('auDirectDebitAccountNumber', fieldError);
-                } else if (fieldName === 'AuDirectDebit.Bsb') {
-                    this.setInputError('auDirectDebitBSB', fieldError);
+                } else if (fieldName === 'Becs.BankAccountHolder') {
+                    this.setInputError('BECSAccountHolder', fieldError);
+                } else if (fieldName === 'Becs.AccountNumber') {
+                    this.setInputError('BECSAccountNumber', fieldError);
+                } else if (fieldName === 'Becs.Bsb') {
+                    this.setInputError('BECS_BSB', fieldError);
                 }
             }
 
@@ -1021,27 +1021,27 @@ const dhango = class {
         return fieldSet;
     }
 
-    buildAUDirectDebitForm(formFieldsRowCssClass) {
+    buildBECSForm(formFieldsRowCssClass) {
         const fieldSet = document.createElement('fieldset');
 
-        fieldSet.setAttribute('id', dhangoPaymentMethod.AUDirectDebit);
+        fieldSet.setAttribute('id', dhangoPaymentMethod.BECS);
         fieldSet.style.display = 'none';
 
         // Account Holder & BSB
         const formRow1 = document.createElement('div');
-        formRow1.id = 'au-direct-debit-form-row-1';
+        formRow1.id = 'becs-form-row-1';
         formRow1.setAttribute('class', formFieldsRowCssClass);
 
         // Account Holder
         formRow1.appendChild(
-            this.createFormElement('auDirectDebitAccountHolder', this.#localization.getTranslation('auDirectDebitBankAccountHolder'), {
-                placeholder: this.#localization.getTranslation('auDirectDebitBankAccountHolder')
+            this.createFormElement('BECSAccountHolder', this.#localization.getTranslation('BECSAccountHolder'), {
+                placeholder: this.#localization.getTranslation('BECSAccountHolder')
             })
         );
 
         // BSB
         formRow1.appendChild(
-            this.createFormElement('auDirectDebitBSB', this.#localization.getTranslation('auDirectDebitBSB'), {
+            this.createFormElement('BECS_BSB', this.#localization.getTranslation('BECS_BSB'), {
                 placeholder: '012-002',
                 // auto-append dash ('-') after 3rd number to achieve '###-###' format
                 input: function() {
@@ -1084,12 +1084,12 @@ const dhango = class {
 
         // Account Number group
         const formRow2 = document.createElement('div');
-        formRow2.id = 'au-direct-debit-form-row-2';
+        formRow2.id = 'becs-form-row-2';
         formRow2.setAttribute('class', formFieldsRowCssClass);
 
         // Account Number
         formRow2.appendChild(
-            this.createFormElement('auDirectDebitAccountNumber', this.#localization.getTranslation('auDirectDebitAccountNumber'), {
+            this.createFormElement('BECSAccountNumber', this.#localization.getTranslation('BECSAccountNumber'), {
                 numbersOnly: true,
                 placeholder: '123456',
             })
@@ -1192,11 +1192,11 @@ const localization = class {
             "acssTransitNumber": "Transit Number",
             "personal": "Personal",
             "corporate": "Corporate",
-            "AUDirectDebit": "AU Direct Debit",
-            "auDirectDebitBankAccountHolder": "Bank Account Holder",
-            "auDirectDebitBSB": "BSB",
-            "auDirectDebitAccountNumber": "Account Number",
-            "auDirectDebitBSBFormat": "The BSB must be formatted as '###-###'",
+            "BECS": "BECS",
+            "BECSAccountHolder": "Bank Account Holder",
+            "BECS_BSB": "BSB",
+            "BECSAccountNumber": "Account Number",
+            "BECS_BSBFormat": "The BSB must be formatted as '###-###'",
             "loadingPaymentMethods": 'Loading available payment methods...',
             "errorGetPaymentMethods": "Failed to load available payment methods",
             "errorNoPaymentMethods": "No payment methods configured for an account"
