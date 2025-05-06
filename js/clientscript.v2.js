@@ -9,12 +9,26 @@ const CTRL_CMD_KEYS = ['Control', 'Meta'];
 const TAB_KEY = 'Tab';
 
 // Suppresses keys not included in allowedKeys array
-function onlyAllowKeys(allowedKeys, allowCtrlV) {
+function onlyAllowKeys(allowedKeys, allowCtrlCombinations) {
     return function (event) {
-        const isCtrlV = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v';
-        if (!allowedKeys.includes(event.key) && !(allowCtrlV && isCtrlV)) {
+        const isCtrlCombination = (event.ctrlKey || event.metaKey) && ['a', 'c', 'v'].includes(event.key.toLowerCase());
+        if (!allowedKeys.includes(event.key) && !(allowCtrlCombinations && isCtrlCombination)) {
             event.preventDefault();
         }
+    }
+}
+
+function setCaretPosition(el, caretPosition) {
+    if (!el) {
+        return;
+    }
+
+    if (el.createTextRange) {
+        const range = el.createTextRange();
+        range.move('character', caretPosition);
+        range.select();
+    } else if (el.selectionStart) {
+        el.setSelectionRange(caretPosition, caretPosition);
     }
 }
 
@@ -282,7 +296,7 @@ const dhango = class {
                 input: this.cardNumberInput,
                 placeholder: "1234 1234 1234 1234",
                 containerId: "card-number-input-container",
-                keydown: onlyAllowKeys([...NUMERIC_KEYS, ...BACKSPACE_DELETE_KEYS, ...LEFT_RIGHT_ARROW_KEYS, ...CTRL_CMD_KEYS, TAB_KEY], true)
+                keydown: onlyAllowKeys([...NUMERIC_KEYS, ...BACKSPACE_DELETE_KEYS, ...LEFT_RIGHT_ARROW_KEYS, ...CTRL_CMD_KEYS, TAB_KEY], true),
             }));
             cardNumberContainer.appendChild(this.createFormElement("cardExpiration", this.#localization.getTranslation("cardExpiration"), {
                 numbersOnly: false,
@@ -516,10 +530,11 @@ const dhango = class {
         input.classList.add("invalid-input");
     }
 
-    cardNumberInput(input) {
-        var number = input.target.value.replace(/\s+/g, '');
-        var cardType = '';
-        var cardNumberContainer = document.getElementById('cardAccountNumber-container');
+    cardNumberInput(inputEvent) {
+        const inputEl = inputEvent.target;
+        const number = inputEl.value.replace(/\s+/g, '');
+        const cardNumberContainer = document.getElementById('cardAccountNumber-container');
+        let cardType = '';
 
         cardNumberContainer.classList.remove("empty-card");
         cardNumberContainer.classList.remove("jcb");
@@ -529,7 +544,7 @@ const dhango = class {
         cardNumberContainer.classList.remove("americanexpress");
 
         // Visa
-        var regularExpression = new RegExp("^4");
+        let regularExpression = new RegExp("^4");
         if (number.match(regularExpression) != null)
             cardNumberContainer.classList.add("visa");
 
@@ -568,12 +583,21 @@ const dhango = class {
         if (number.match(regularExpression) != null)
             cardType = "Visa Electron";
 
-         // remove all spaces
+        // Format the value to have a whitespace between 4 characters groups
+        // Preserve the caret index if user types in in the middle of the input text
         const groups = number.match(/.{1,4}/g);
+        const caretPosition = inputEl.selectionStart;
         if (groups) {
-            input.target.value = groups.join(' ');
+            const formattedValue = groups.join(' ');
+            inputEvent.target.value = formattedValue;
+
+            // maintain caret position if user types in the middle of the input value
+            if (caretPosition < formattedValue.length - 1) {
+                const pos = caretPosition === number.length ? formattedValue.length : caretPosition;
+                setCaretPosition(inputEl, pos);
+            }
         } else {
-            input.target.value = '';
+            inputEvent.target.value = '';
         }
     }
 
