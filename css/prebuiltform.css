@@ -4,7 +4,8 @@
 }
 
 /* Payment Method container */
-.payment-method-container {
+.payment-method-container,
+.billing-address-form-container {
   margin: 16px 0;
   padding: 16px;
   border: 1px solid gray;
@@ -224,4 +225,12 @@ input[type=number] {
   #cardAccountNumber-container .input-field::after {
     background-image: none;
   }
+}
+
+#billing-address-row-1,
+#billing-address-row-2,
+#billing-address-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 15px;
 }

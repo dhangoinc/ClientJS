@@ -32,6 +32,27 @@ function setCaretPosition(el, caretPosition) {
     }
 }
 
+function triggerFieldSetUIValidation(fieldSet) {
+    // This is now the active field set. The input is valid until we find otherwise.
+    let validInput = true;
+
+    if (fieldSet) {
+        for (const input of fieldSet.getElementsByTagName('label')) {
+            if (input.id.endsWith('-error-label') && input.style.display === '') {
+                validInput = false;
+            }
+        }
+    }
+
+    return validInput;
+}
+
+function triggerBlur(container) {
+    for (const input of container.getElementsByTagName('input')) {
+        input.dispatchEvent(new Event('blur', { bubbles: false }));
+    }
+}
+
 class dhangoPaymentMethod {
     static get Card() {
         return "Card";
@@ -64,6 +85,7 @@ const dhango = class {
         this.baseUrl = "";
         this.changePaymentMethodHandler = null;
         this.validateAccount = false;
+        this.enableAddress = false;
     }
 
     set culture(value) {
@@ -83,16 +105,11 @@ const dhango = class {
 
         this.#fieldSets.forEach(function (fieldSet) {
             if (fieldSet.id === paymentMethod) {
-                // This is now the active field set. The input is valid until we find otherwise.
-                validInput = true;
-
-                for (const input of fieldSet.getElementsByTagName('label')) {
-                    if (input.id.endsWith('-error-label') && input.style.display === '') {
-                        validInput = false;
-                    }
-                }
+                validInput = triggerFieldSetUIValidation(fieldSet);
             }
         });
+
+        validInput = validInput && triggerFieldSetUIValidation(document.getElementById('billing-address-form-container'));
 
         return validInput;
     }
@@ -153,12 +170,25 @@ const dhango = class {
     }
 
     get address() {
-        if (this.#paymentMethod != dhangoPaymentMethod.Card)
+        if (this.#paymentMethod != dhangoPaymentMethod.Card && !this.enableAddress)
             return null;
 
-        return {
-            postalCode: document.getElementById('postalCode').value
-        };
+        const address = {
+            postalCode: document.getElementById('postalCode').value,
+        }
+
+        if (this.enableAddress) {
+            Object.assign(address, {
+                name: this.getFieldValue('billingAddressName'),
+                streetAddress: this.getFieldValue('billingAddressStreet'),
+                city: this.getFieldValue('billingAddressCity'),
+                stateOrProvince: this.getFieldValue('billingAddressStateOrProvince'),
+                postalCode: this.getFieldValue('billingAddressPostalCode'),
+                country: this.getFieldValue('billingAddressCountry')
+            })
+        }
+
+        return address;
     }
 
     get cardExpirationMonth() {
@@ -197,7 +227,7 @@ const dhango = class {
         return 0;
     }
 
-    createRadio({name, value, label: labelText, iconCssClass}) {
+    createRadio({ name, value, label: labelText, iconCssClass }) {
         const label = document.createElement('label');
         label.setAttribute('class', 'radio-container');
 
@@ -222,7 +252,7 @@ const dhango = class {
             radioLabelWrapper.appendChild(radioIcon);
         }
         radioLabelWrapper.appendChild(radioLabel);
-        label.appendChild(radioLabelWrapper)
+        label.appendChild(radioLabelWrapper);
 
         return label;
     }
@@ -284,7 +314,7 @@ const dhango = class {
             cardFieldSet.setAttribute("id", dhangoPaymentMethod.Card);
             cardFieldSet.style.display = "none";
 
-            cardFieldSet.appendChild(this.createFormElement("cardAccountHolder", this.#localization.getTranslation("cardAccountHolder"), {placeholder: this.#localization.getTranslation("firstAndLastName")}));
+            cardFieldSet.appendChild(this.createFormElement("cardAccountHolder", this.#localization.getTranslation("cardAccountHolder"), { placeholder: this.#localization.getTranslation("firstAndLastName") }));
 
             const cardNumberContainer = document.createElement("div");
             cardNumberContainer.id = "cardNumberContainer";
@@ -359,7 +389,7 @@ const dhango = class {
             inputContainer.id = "bankAccountHolderContainer";
             inputContainer.setAttribute('class', formFieldsRowCssClass);
 
-            inputContainer.appendChild(this.createFormElement("bankAccountHolder", this.#localization.getTranslation("bankAccountHolder"), {placeholder: this.#localization.getTranslation("bankAccountHolder")}));
+            inputContainer.appendChild(this.createFormElement("bankAccountHolder", this.#localization.getTranslation("bankAccountHolder"), { placeholder: this.#localization.getTranslation("bankAccountHolder") }));
             inputContainer.appendChild(this.createFormElement("routingNumber", this.#localization.getTranslation("routingNumber"), {
                 numbersOnly: true,
                 minimumLength: 9,
@@ -490,6 +520,11 @@ const dhango = class {
                 }
             });
         }
+
+        // billing address (if configured)
+        if (this.enableAddress) {
+            dhangoContainer.appendChild(this.buildBillingAddressForm());
+        }
     }
 
     validate(target) {
@@ -510,9 +545,12 @@ const dhango = class {
         }
 
         if (activeFieldSet != null) {
-            for (const input of activeFieldSet.getElementsByTagName('input')) {
-                input.dispatchEvent(new Event('blur', {bubbles: false}));
-            }
+            triggerBlur(activeFieldSet);
+        }
+
+        const billingAddressContainer = document.getElementById('billing-address-form-container');
+        if (billingAddressContainer) {
+            triggerBlur(billingAddressContainer);
         }
     }
 
@@ -913,7 +951,7 @@ const dhango = class {
         if (response.status == 200) {
             getPayerFeesHandler(result);
         } else {
-            getPayerFeesHandler({cardFee: null, achFee: null});
+            getPayerFeesHandler({ cardFee: null, achFee: null });
         }
     }
 
@@ -963,6 +1001,18 @@ const dhango = class {
                     this.setInputError('auDirectDebitAccountNumber', fieldError);
                 } else if (fieldName === 'AuDirectDebit.Bsb') {
                     this.setInputError('auDirectDebitBsb', fieldError);
+                } else if (fieldName === 'Address.Name') {
+                    this.setInputError('billingAddressName', fieldError)
+                }  else if (fieldName === 'Address.StreetAddress') {
+                    this.setInputError('billingAddressStreetAddress', fieldError)
+                }  else if (fieldName === 'Address.City') {
+                    this.setInputError('billingAddressCity', fieldError)
+                }  else if (fieldName === 'Address.StateOrProvince') {
+                    this.setInputError('billingAddressStateOrProvince', fieldError)
+                }  else if (fieldName === 'Address.PostalCode') {
+                    this.setInputError('billingAddressPostalCode', fieldError)
+                }  else if (fieldName === 'Address.Country') {
+                    this.setInputError('billingAddressCountry', fieldError)
                 }
             }
 
@@ -980,7 +1030,7 @@ const dhango = class {
             }
         });
 
-        const result = await response.json().catch(() => ({status: 500}));
+        const result = await response.json().catch(() => ({ status: 500 }));
 
         return response.status === 200 ? result.supportedPaymentMethods : null;
     }
@@ -990,7 +1040,7 @@ const dhango = class {
     }
 
     createSelectablePaymentMethodFormContainer(data) {
-        const {paymentMethod, radioIcon, fieldSet} = data;
+        const { paymentMethod, radioIcon, fieldSet } = data;
 
         const radioButton = this.createRadio({
             name: 'paymentMethod',
@@ -1007,6 +1057,79 @@ const dhango = class {
         return paymentMethodFormContainer;
     }
 
+    buildBillingAddressForm() {
+        const container = document.createElement('div');
+        container.setAttribute('id', 'billing-address-form-container');
+        container.setAttribute('class', 'billing-address-form-container');
+        const formFieldsRowCssClass = 'billing-address-form';
+
+        // section label
+        const label = document.createElement('label');
+        label.setAttribute('class', 'billing-address-section-label');
+        label.setAttribute('for', 'billing-address-fieldset');
+        label.textContent = this.#localization.getTranslation('billingAddress');
+        container.appendChild(label);
+
+        const fieldSet = document.createElement('fieldset');
+        fieldSet.setAttribute('id', 'billing-address-fieldset');
+
+        // Name & Street Address
+        const formRow1 = document.createElement('div');
+        formRow1.id = 'billing-address-row-1';
+        formRow1.setAttribute('class', formFieldsRowCssClass);
+        formRow1.appendChild(
+            this.createFormElement('billingAddressName', this.#localization.getTranslation('name'), {
+                placeholder: this.#localization.getTranslation('name')
+            })
+        );
+        formRow1.appendChild(
+            this.createFormElement('billingAddressStreet', this.#localization.getTranslation('streetAddress'), {
+                placeholder: this.#localization.getTranslation('streetAddress')
+            })
+        );
+        fieldSet.appendChild(formRow1);
+
+        // City & State or Province
+        const formRow2 = document.createElement('div');
+        formRow2.id = 'billing-address-row-2';
+        formRow2.setAttribute('class', formFieldsRowCssClass);
+        formRow2.appendChild(
+            this.createFormElement('billingAddressCity', this.#localization.getTranslation('city'), {
+                placeholder: this.#localization.getTranslation('city')
+            })
+        );
+        formRow2.appendChild(
+            this.createFormElement('billingAddressStateOrProvince', this.#localization.getTranslation('stateOrProvince'), {
+                placeholder: this.#localization.getTranslation('stateOrProvince')
+            })
+        );
+        fieldSet.appendChild(formRow2);
+
+        // Postal Code & Country
+        const formRow3 = document.createElement('div');
+        formRow3.id = 'billing-address-row-3';
+        formRow3.setAttribute('class', formFieldsRowCssClass);
+        formRow3.appendChild(
+            this.createFormElement('billingAddressPostalCode', this.#localization.getTranslation('postalCode'), {
+                numbersOnly: false,
+                minimumLength: 5,
+                maximumLength: 10,
+                placeholder: "12345"
+            })
+        );
+        formRow3.appendChild(
+            this.createFormElement('billingAddressCountry', this.#localization.getTranslation('country'), {
+                maximumLength: 2,
+                placeholder: this.#localization.getTranslation('country')
+            })
+        );
+
+        container.appendChild(fieldSet);
+        fieldSet.appendChild(formRow3);
+
+        return container;
+    }
+
     buildAcssForm(formFieldsRowCssClass) {
         const fieldSet = document.createElement('fieldset');
 
@@ -1015,8 +1138,8 @@ const dhango = class {
 
         // Bank Account Type selection
         fieldSet.appendChild(this.buildBankAccountTypeSection([
-            {value: 'PersonalChecking', label: 'Personal'},
-            {value: 'CorporateChecking', label: 'Corporate'}
+            { value: 'PersonalChecking', label: 'Personal' },
+            { value: 'CorporateChecking', label: 'Corporate' }
         ], 'acssBankAccountType', 'acss'));
 
         // Account Holder & Institution Number
@@ -1219,6 +1342,12 @@ const localization = class {
             "card": "Card",
             "ach": "US Bank Account",
             "cardAccountHolder": "Card Holder",
+            "city": "City",
+            "country": "Country",
+            "stateOrProvince": "State or Province",
+            "streetAddress": "Street Address",
+            "name": "Name",
+            "billingAddress": "Billing Address",
             "bankAccountHolder": "Account Holder",
             "cardAccountNumber": "Card Number",
             "cardExpiration": "Expiration",

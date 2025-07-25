@@ -49,6 +49,8 @@
   d.supportedPaymentMethods = [dhangoPaymentMethod.Card];
   */
   d.supportedPaymentMethods = [dhangoPaymentMethod.Card, dhangoPaymentMethod.ACH];
+  // OPTIONAL: This will default to false if not specified
+  d.enableAddress = false;
 
   // This call injects the form elements into the given div.
   d.displayTokenForm("dhangoTokenSection");
