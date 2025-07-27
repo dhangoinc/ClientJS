@@ -49,7 +49,7 @@ function triggerFieldSetUIValidation(fieldSet) {
 
 function triggerBlur(container) {
     for (const input of container.getElementsByTagName('input')) {
-        input.dispatchEvent(new Event('blur', { bubbles: false }));
+        input.dispatchEvent(new Event('blur', {bubbles: false}));
     }
 }
 
@@ -173,10 +173,7 @@ const dhango = class {
         if (this.#paymentMethod != dhangoPaymentMethod.Card && !this.enableAddress)
             return null;
 
-        const address = {
-            postalCode: document.getElementById('postalCode').value,
-        }
-
+        const address = {};
         if (this.enableAddress) {
             Object.assign(address, {
                 name: this.getFieldValue('billingAddressName'),
@@ -186,6 +183,10 @@ const dhango = class {
                 postalCode: this.getFieldValue('billingAddressPostalCode'),
                 country: this.getFieldValue('billingAddressCountry')
             })
+        } else {
+            Object.assign(address, {
+                postalCode: document.getElementById('postalCode').value,
+            });
         }
 
         return address;
@@ -227,7 +228,7 @@ const dhango = class {
         return 0;
     }
 
-    createRadio({ name, value, label: labelText, iconCssClass }) {
+    createRadio({name, value, label: labelText, iconCssClass}) {
         const label = document.createElement('label');
         label.setAttribute('class', 'radio-container');
 
@@ -314,7 +315,7 @@ const dhango = class {
             cardFieldSet.setAttribute("id", dhangoPaymentMethod.Card);
             cardFieldSet.style.display = "none";
 
-            cardFieldSet.appendChild(this.createFormElement("cardAccountHolder", this.#localization.getTranslation("cardAccountHolder"), { placeholder: this.#localization.getTranslation("firstAndLastName") }));
+            cardFieldSet.appendChild(this.createFormElement("cardAccountHolder", this.#localization.getTranslation("cardAccountHolder"), {placeholder: this.#localization.getTranslation("firstAndLastName")}));
 
             const cardNumberContainer = document.createElement("div");
             cardNumberContainer.id = "cardNumberContainer";
@@ -348,12 +349,15 @@ const dhango = class {
                 maximumLength: 4,
                 placeholder: "CVV"
             }));
-            cardVerificationContainer.appendChild(this.createFormElement("postalCode", this.#localization.getTranslation("postalCode"), {
-                numbersOnly: false,
-                minimumLength: 5,
-                maximumLength: 10,
-                placeholder: "12345"
-            }));
+
+            if (!this.enableAddress) {
+                cardVerificationContainer.appendChild(this.createFormElement("postalCode", this.#localization.getTranslation("postalCode"), {
+                    numbersOnly: false,
+                    minimumLength: 5,
+                    maximumLength: 10,
+                    placeholder: "12345"
+                }));
+            }
 
             cardFieldSet.appendChild(cardVerificationContainer);
 
@@ -389,7 +393,7 @@ const dhango = class {
             inputContainer.id = "bankAccountHolderContainer";
             inputContainer.setAttribute('class', formFieldsRowCssClass);
 
-            inputContainer.appendChild(this.createFormElement("bankAccountHolder", this.#localization.getTranslation("bankAccountHolder"), { placeholder: this.#localization.getTranslation("bankAccountHolder") }));
+            inputContainer.appendChild(this.createFormElement("bankAccountHolder", this.#localization.getTranslation("bankAccountHolder"), {placeholder: this.#localization.getTranslation("bankAccountHolder")}));
             inputContainer.appendChild(this.createFormElement("routingNumber", this.#localization.getTranslation("routingNumber"), {
                 numbersOnly: true,
                 minimumLength: 9,
@@ -951,7 +955,7 @@ const dhango = class {
         if (response.status == 200) {
             getPayerFeesHandler(result);
         } else {
-            getPayerFeesHandler({ cardFee: null, achFee: null });
+            getPayerFeesHandler({cardFee: null, achFee: null});
         }
     }
 
@@ -1003,15 +1007,15 @@ const dhango = class {
                     this.setInputError('auDirectDebitBsb', fieldError);
                 } else if (fieldName === 'Address.Name') {
                     this.setInputError('billingAddressName', fieldError)
-                }  else if (fieldName === 'Address.StreetAddress') {
+                } else if (fieldName === 'Address.StreetAddress') {
                     this.setInputError('billingAddressStreetAddress', fieldError)
-                }  else if (fieldName === 'Address.City') {
+                } else if (fieldName === 'Address.City') {
                     this.setInputError('billingAddressCity', fieldError)
-                }  else if (fieldName === 'Address.StateOrProvince') {
+                } else if (fieldName === 'Address.StateOrProvince') {
                     this.setInputError('billingAddressStateOrProvince', fieldError)
-                }  else if (fieldName === 'Address.PostalCode') {
+                } else if (fieldName === 'Address.PostalCode') {
                     this.setInputError('billingAddressPostalCode', fieldError)
-                }  else if (fieldName === 'Address.Country') {
+                } else if (fieldName === 'Address.Country') {
                     this.setInputError('billingAddressCountry', fieldError)
                 }
             }
@@ -1030,7 +1034,7 @@ const dhango = class {
             }
         });
 
-        const result = await response.json().catch(() => ({ status: 500 }));
+        const result = await response.json().catch(() => ({status: 500}));
 
         return response.status === 200 ? result.supportedPaymentMethods : null;
     }
@@ -1040,7 +1044,7 @@ const dhango = class {
     }
 
     createSelectablePaymentMethodFormContainer(data) {
-        const { paymentMethod, radioIcon, fieldSet } = data;
+        const {paymentMethod, radioIcon, fieldSet} = data;
 
         const radioButton = this.createRadio({
             name: 'paymentMethod',
@@ -1138,8 +1142,8 @@ const dhango = class {
 
         // Bank Account Type selection
         fieldSet.appendChild(this.buildBankAccountTypeSection([
-            { value: 'PersonalChecking', label: 'Personal' },
-            { value: 'CorporateChecking', label: 'Corporate' }
+            {value: 'PersonalChecking', label: 'Personal'},
+            {value: 'CorporateChecking', label: 'Corporate'}
         ], 'acssBankAccountType', 'acss'));
 
         // Account Holder & Institution Number
