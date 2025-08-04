@@ -69,6 +69,14 @@ class dhangoPaymentMethod {
     static get AuDirectDebit() {
         return 'AuDirectDebit';
     }
+
+    static get BACS() {
+        return 'BACS';
+    }
+
+    static get NzDirectDebit() {
+        return 'NzDirectDebit';
+    }
 }
 
 const dhango = class {
@@ -166,6 +174,32 @@ const dhango = class {
             bankAccountHolder: this.getFieldValue('auDirectDebitAccountHolder'),
             bsb: this.getFieldValue('auDirectDebitBsb'),
             accountNumber: this.getFieldValue('auDirectDebitAccountNumber'),
+        }
+    }
+
+    get bacs() {
+        if (this.#paymentMethod !== dhangoPaymentMethod.BACS) {
+            return null;
+        }
+
+        return {
+            bankAccountHolder: this.getFieldValue('bacsBankAccountHolder'),
+            sortCode: this.getFieldValue('bacsSortCode'),
+            accountNumber: this.getFieldValue('bacsAccountNumber')
+        }
+    }
+
+    get nzDirectDebit() {
+        if (this.#paymentMethod !== dhangoPaymentMethod.NzDirectDebit) {
+            return null;
+        }
+
+        return {
+            bankAccountHolder: this.getFieldValue('nzDirectDebitBankAccountHolder'),
+            bankCode: this.getFieldValue('nzDirectDebitBankCode'),
+            branchCode: this.getFieldValue('nzDirectDebitBranchCode'),
+            suffix: this.getFieldValue('nzDirectDebitSuffix'),
+            accountNumber: this.getFieldValue('nzDirectDebitAccountNumber')
         }
     }
 
@@ -471,6 +505,32 @@ const dhango = class {
             }
         }
 
+        // BACS
+        if (apiEnabledPaymentMethods.includes(dhangoPaymentMethod.BACS)) {
+            const fieldset = this.buildBacsForm(formFieldsRowCssClass);
+            const formContainer = this.createSelectablePaymentMethodFormContainer({
+                paymentMethod: dhangoPaymentMethod.BACS,
+                radioIcon: '',
+                fieldSet: fieldset
+            });
+
+            dhangoContainer.appendChild(formContainer);
+            this.#fieldSets.push(fieldset);
+        }
+
+        // NZ Direct Debit
+        if (apiEnabledPaymentMethods.includes(dhangoPaymentMethod.NzDirectDebit)) {
+            const fieldset = this.buildNzDirectDebitForm(formFieldsRowCssClass);
+            const formContainer = this.createSelectablePaymentMethodFormContainer({
+                paymentMethod: dhangoPaymentMethod.NzDirectDebit,
+                radioIcon: '',
+                fieldSet: fieldset
+            });
+
+            dhangoContainer.appendChild(formContainer);
+            this.#fieldSets.push(fieldset);
+        }
+
         if (this.#fieldSets.length > 0) {
             this.#paymentMethod = this.#fieldSets[0].id;
             dhangoContainer.querySelector(`input[type='radio'][value=${this.#paymentMethod}]`).checked = true;
@@ -489,8 +549,8 @@ const dhango = class {
             }
         }
 
-        var bankAccountNumber = document.getElementById('bankAccountNumber');
-        var confirmBankAccountNumber = document.getElementById('confirmBankAccountNumber');
+        const bankAccountNumber = document.getElementById('bankAccountNumber');
+        const confirmBankAccountNumber = document.getElementById('confirmBankAccountNumber');
 
         if (confirmBankAccountNumber != null) {
             bankAccountNumber.addEventListener('blur', (event) => {
@@ -502,7 +562,7 @@ const dhango = class {
             });
         }
 
-        var cardExpiration = document.getElementById('cardExpiration');
+        const cardExpiration = document.getElementById('cardExpiration');
 
         if (cardExpiration != null) {
             cardExpiration.addEventListener('blur', (event) => {
@@ -537,6 +597,8 @@ const dhango = class {
         const achFieldSet = document.getElementById(dhangoPaymentMethod.ACH);
         const acssFieldSet = document.getElementById(dhangoPaymentMethod.ACSS);
         const auDirectDebitFieldSet = document.getElementById(dhangoPaymentMethod.AuDirectDebit);
+        const bacsFieldSet = document.getElementById(dhangoPaymentMethod.BACS);
+        const nzDirectDebitFieldSet = document.getElementById(dhangoPaymentMethod.NzDirectDebit);
 
         if (cardFieldSet != null && cardFieldSet.style.display == '') {
             activeFieldSet = cardFieldSet;
@@ -546,6 +608,10 @@ const dhango = class {
             activeFieldSet = acssFieldSet;
         } else if (auDirectDebitFieldSet !== null && auDirectDebitFieldSet.style.display == '') {
             activeFieldSet = auDirectDebitFieldSet;
+        } else if (bacsFieldSet !== null && bacsFieldSet.style.display === '') {
+            activeFieldSet = bacsFieldSet;
+        } else if (nzDirectDebitFieldSet !== null && nzDirectDebitFieldSet.style.display === '') {
+            activeFieldSet = nzDirectDebitFieldSet;
         }
 
         if (activeFieldSet != null) {
@@ -917,6 +983,8 @@ const dhango = class {
                 ach: this.ach,
                 acss: this.acss,
                 auDirectDebit: this.auDirectDebit,
+                bacs: this.bacs,
+                nzDirectDebit: this.nzDirectDebit,
                 address: this.address,
                 validateAccount: this.validateAccount
             };
@@ -1006,17 +1074,33 @@ const dhango = class {
                 } else if (fieldName === 'AuDirectDebit.Bsb') {
                     this.setInputError('auDirectDebitBsb', fieldError);
                 } else if (fieldName === 'Address.Name') {
-                    this.setInputError('billingAddressName', fieldError)
+                    this.setInputError('billingAddressName', fieldError);
                 } else if (fieldName === 'Address.StreetAddress') {
-                    this.setInputError('billingAddressStreetAddress', fieldError)
+                    this.setInputError('billingAddressStreetAddress', fieldError);
                 } else if (fieldName === 'Address.City') {
-                    this.setInputError('billingAddressCity', fieldError)
+                    this.setInputError('billingAddressCity', fieldError);
                 } else if (fieldName === 'Address.StateOrProvince') {
-                    this.setInputError('billingAddressStateOrProvince', fieldError)
+                    this.setInputError('billingAddressStateOrProvince', fieldError);
                 } else if (fieldName === 'Address.PostalCode') {
-                    this.setInputError('billingAddressPostalCode', fieldError)
+                    this.setInputError('billingAddressPostalCode', fieldError);
                 } else if (fieldName === 'Address.Country') {
-                    this.setInputError('billingAddressCountry', fieldError)
+                    this.setInputError('billingAddressCountry', fieldError);
+                } else if (fieldName === 'NzDirectDebit.BankAccountHolder') {
+                    this.setInputError('nzDirectDebitBankAccountHolder', fieldError);
+                } else if (fieldName === 'NzDirectDebit.BankCode') {
+                    this.setInputError('nzDirectDebitBankCode', fieldError);
+                } else if (fieldName === 'NzDirectDebit.BranchCode') {
+                    this.setInputError('nzDirectDebitBranchCode', fieldError);
+                } else if (fieldName === 'NzDirectDebit.Suffix') {
+                    this.setInputError('nzDirectDebitSuffix', fieldError);
+                } else if (fieldName === 'NzDirectDebit.AccountNumber') {
+                    this.setInputError('nzDirectDebitAccountNumber', fieldError);
+                } else if (fieldName === 'Bacs.BankAccountHolder') {
+                    this.setInputError('bacsBankAccountHolder', fieldError);
+                } else if (fieldName === 'Bacs.SortCode') {
+                    this.setInputError('bacsSortCode', fieldError);
+                } else if (fieldName === 'Bacs.AccountNumber') {
+                    this.setInputError('bacsAccountNumber', fieldError);
                 }
             }
 
@@ -1277,6 +1361,125 @@ const dhango = class {
         return fieldSet;
     }
 
+    buildBacsForm(formFieldsRowCssClass) {
+        const fieldset = document.createElement('fieldset');
+
+        fieldset.setAttribute('id', dhangoPaymentMethod.BACS);
+        fieldset.style.display = 'none';
+
+        // Account Holder & Sort Code
+        const formRow1 = document.createElement('div');
+        formRow1.id = 'bacs-form-row-1';
+        formRow1.setAttribute('class', formFieldsRowCssClass);
+
+        // Account Holder
+        formRow1.appendChild(
+            this.createFormElement('bacsBankAccountHolder', this.#localization.getTranslation('bankAccountHolder'), {
+                placeholder: this.#localization.getTranslation('bankAccountHolder')
+            })
+        );
+
+        // Sort Code
+        formRow1.appendChild(
+            this.createFormElement('bacsSortCode', this.#localization.getTranslation('bacsSortCode'), {
+                numbersOnly: true,
+                minimumLength: 6,
+                maximumLength: 6,
+                placeholder: '123456',
+            })
+        );
+
+        fieldset.appendChild(formRow1);
+
+        // Account Number
+        const formRow2 = document.createElement('div');
+        formRow2.id = 'bacs-form-row-2';
+        formRow2.setAttribute('class', formFieldsRowCssClass);
+
+        // Account Number
+        formRow2.appendChild(
+            this.createFormElement('bacsAccountNumber', this.#localization.getTranslation('accountNumber'), {
+                numbersOnly: true,
+                minimumLength: 8,
+                maximumLength: 8,
+                placeholder: '12345678',
+            })
+        );
+
+        fieldset.appendChild(formRow2);
+
+        return fieldset;
+    }
+
+    buildNzDirectDebitForm(formFieldsRowCssClass) {
+        const fieldset = document.createElement('fieldset');
+
+        fieldset.setAttribute('id', dhangoPaymentMethod.NzDirectDebit);
+        fieldset.style.display = 'none';
+
+        // Account Holder
+        const formRow1 = document.createElement('div');
+        formRow1.id = 'nzdirectdebit-form-row-1';
+        formRow1.setAttribute('class', formFieldsRowCssClass);
+
+        // Account Holder
+        formRow1.appendChild(
+            this.createFormElement('nzDirectDebitBankAccountHolder', this.#localization.getTranslation('bankAccountHolder'), {
+                placeholder: this.#localization.getTranslation('bankAccountHolder')
+            })
+        );
+        fieldset.appendChild(formRow1);
+
+        // Bank Code & Branch Code
+        const formRow2 = document.createElement('div');
+        formRow2.id = 'nzdirectdebit-form-row-2';
+        formRow2.setAttribute('class', formFieldsRowCssClass);
+
+        // Bank Code
+        formRow2.appendChild(
+            this.createFormElement('nzDirectDebitBankCode', this.#localization.getTranslation('nzDirectDebitBankCode'), {
+                placeholder: '12',
+                minimumLength: 2,
+                maximumLength: 2,
+            })
+        );
+
+        // Branch Code
+        formRow2.appendChild(
+            this.createFormElement('nzDirectDebitBranchCode', this.#localization.getTranslation('nzDirectDebitBranchCode'), {
+                placeholder: '1234',
+                minimumLength: 4,
+                maximumLength: 4,
+            })
+        );
+        fieldset.appendChild(formRow2);
+
+        // Suffix & Account Number
+        const formRow3 = document.createElement('div');
+        formRow3.id = 'nzdirectdebit-form-row-3';
+        formRow3.setAttribute('class', formFieldsRowCssClass);
+
+        // Suffix
+        formRow3.appendChild(this.createFormElement('nzDirectDebitSuffix', this.#localization.getTranslation('nzDirectDebitSuffix'), {
+            placeholder: '123',
+            minimumLength: 2,
+            maximumLength: 3,
+        }));
+
+        // Account Number
+        formRow3.appendChild(
+            this.createFormElement('nzDirectDebitAccountNumber', this.#localization.getTranslation('bankAccountNumber'), {
+                numbersOnly: true,
+                placeholder: '123456',
+                minimumLength: 7,
+                maximumLength: 7,
+            })
+        );
+        fieldset.appendChild(formRow3);
+
+        return fieldset;
+    }
+
     buildBankAccountTypeSection(bankAccountTypes, groupName, idPrefix) {
         const bankAccountTypeSectionEl = document.createElement('span');
 
@@ -1353,6 +1556,7 @@ const localization = class {
             "name": "Name",
             "billingAddress": "Billing Address",
             "bankAccountHolder": "Account Holder",
+            "accountNumber": "Account Number",
             "cardAccountNumber": "Card Number",
             "cardExpiration": "Expiration",
             "securityCode": "Security Code",
@@ -1380,6 +1584,12 @@ const localization = class {
             "auDirectDebitBsb": "BSB",
             "auDirectDebitAccountNumber": "Account Number",
             "auDirectDebitBsbFormat": "The BSB must be formatted as '###-###'",
+            "bacs": "BACS",
+            "bacsSortCode": "Sort Code",
+            "nzdirectdebit": "NZ Direct Debit",
+            "nzDirectDebitBankCode": "Bank Code",
+            "nzDirectDebitBranchCode": "Branch Code",
+            "nzDirectDebitSuffix": "Suffix",
             "loadingPaymentMethods": 'Loading available payment methods...',
             "errorGetPaymentMethods": "Failed to load available payment methods",
             "errorNoPaymentMethods": "No payment methods configured for an account"

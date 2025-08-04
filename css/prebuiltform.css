@@ -145,7 +145,12 @@ fieldset {
   display: inline;
 }
 
-#cardVerificationContainer, #cardNumberContainer, #bankAccountHolderContainer, #bankAccountNumberContainer {
+#cardVerificationContainer,
+#cardNumberContainer,
+#bankAccountHolderContainer,
+#bankAccountNumberContainer,
+#nzdirectdebit-form-row-2,
+#nzdirectdebit-form-row-3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 15px;
